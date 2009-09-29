@@ -43,7 +43,7 @@ class Packages(Directive):
     def deletePkg(self, pkgName ):
         self.rmpkgs.append( pkgName )
 
-class kickstart:
+class Kickstart:
     def __init__(self, name ):
         self.name = name
         self.commands = []
