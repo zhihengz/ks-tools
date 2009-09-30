@@ -36,5 +36,25 @@ class parserTest(unittest.TestCase):
         command = ks.commands[0]
         self.assertEquals( command.name, "lang" )
 
+    def testParseKickstart( self ):
+        node = self.createNode( "<kickstart name='test'></kickstart>" )
+        ks = parseKickstart( node )
+        self.assertEquals( ks.name, "test" )
+
+    def testParseKickstartWithCommands( self ):
+        xmlData = """
+<kickstart name="test">
+<command>
+<lang>us</lang>
+</command>
+</kickstart>
+"""
+        node = self.createNode( xmlData )
+        ks = parseKickstart( node )
+        self.assertEquals( len( ks.commands ), 1 )
+        command = ks.commands[0]
+        self.assertEquals( command.name, "lang" )
+        self.assertEquals( command.value, "us" )
+
 if __name__ == '__main__':
     unittest.main()

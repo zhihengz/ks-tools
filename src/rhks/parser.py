@@ -1,5 +1,6 @@
 import xml.dom.minidom
 from components import *
+import log
 
 def getNodeText( aNode):
     """get node text
@@ -18,14 +19,20 @@ def getNodeText( aNode):
     return None
     
 
-def parseKickstartNode( node ):
-    ks = Kickstart( "demo")
-    parseCommands( ks, node )
-    return ks
+def parseKickstart( node ):
+    if node.localName == 'kickstart':
+        ks = Kickstart( node.attributes["name"].value )
+        for cmdNode in node.getElementsByTagName( "command" ):
+            parseCommands( ks, cmdNode )
+        return ks
+    else:
+        return None
 
 def parseCommands( ks, node ):
-    command = parseCommand( node )
-    ks.addCommand( command )
+    for childNode in node.childNodes:
+        if childNode.nodeType == childNode.ELEMENT_NODE:
+            command = parseCommand( childNode )
+            ks.addCommand( command )
     
 def parseCommand( node ):
     command = Command( node.localName )
