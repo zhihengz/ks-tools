@@ -2,9 +2,18 @@ from rhks.components import *
 from rhks.parser import *
 import unittest
 import xml.dom.minidom
+import os
 
 class parserTest(unittest.TestCase):
 
+    def setUp( self ):
+        self.xmlData =  """
+<kickstart name="test">
+<command>
+<lang>us</lang>
+</command>
+</kickstart>
+"""
     def createNode( self, xmlText ):
         doc = xml.dom.minidom.parseString( xmlText )
         return doc.documentElement
@@ -42,15 +51,20 @@ class parserTest(unittest.TestCase):
         self.assertEquals( ks.name, "test" )
 
     def testParseKickstartWithCommands( self ):
-        xmlData = """
-<kickstart name="test">
-<command>
-<lang>us</lang>
-</command>
-</kickstart>
-"""
-        node = self.createNode( xmlData )
+        node = self.createNode( self.xmlData )
         ks = parseKickstart( node )
+        self.assertKickstartParse( ks )
+
+    def testParseKickstartXmlSource( self ):
+        file = open( "test.xml", "w" )
+        file.write( self.xmlData )
+        file.close()
+        ks = parseKickstartXmlSource( "test.xml" )
+        self.assertKickstartParse( ks )
+        os.remove( "test.xml" )
+        
+    def assertKickstartParse( self, ks ):
+
         self.assertEquals( len( ks.commands ), 1 )
         command = ks.commands[0]
         self.assertEquals( command.name, "lang" )
