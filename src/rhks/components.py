@@ -24,6 +24,9 @@ class Directive:
     def compile(self):
         return name + compileOptions(self)
 
+    def addOption( self, optionName, optionValue ):
+        self.options[ optionName ] = optionValue
+
 class Command(Directive):
     def __init__(self, name ):
         Directive.__init__(self,name)
@@ -38,8 +41,14 @@ class Command(Directive):
             ret += " " + self.value
         return ret
 
-    def addOption( self, optionName, optionValue ):
-        self.options[ optionName ] = optionValue
+def compilePackageGroup( gName ):
+    return "@ " + gName
+
+def compileAddPackage( pName ):
+    return pName
+
+def compileDeletePackage( pName ):
+    return "-" + pName
 
 class Packages(Directive):
     def __init__(self):
@@ -56,6 +65,16 @@ class Packages(Directive):
 
     def deletePkg(self, pkgName ):
         self.rmpkgs.append( pkgName )
+
+    def compile(self):
+        ret = "%" + self.name + self.compileOptions() + "\n"
+        for gName in self.groups:
+            ret += compilePackageGroup( gName ) + "\n"
+        for pName in self.addpkgs:
+            ret += compileAddPackage( pName ) + "\n"
+        for pName in self.rmpkgs:
+            ret += compileDeletePackage( pName ) + "\n"
+        return ret
 
 class Kickstart:
     def __init__(self, name ):

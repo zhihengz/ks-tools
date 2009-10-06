@@ -9,6 +9,8 @@ def build( kickstart, filename ):
     file = open(filename, "w" )
     for command in kickstart.commands:
         file.write( command.compile() + "\n" )
+    if not kickstart.packages == None :
+            file.writelines( kickstart.packages.compile() )
     file.close
 
 def main():

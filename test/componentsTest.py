@@ -56,5 +56,58 @@ class componentsTest(unittest.TestCase):
         packages.deletePkg( "pkg_a" )
         self.assertEquals( packages.rmpkgs[0], "pkg_a" )
 
+    def testCompilePackageGroup(self):
+        self.assertEquals( compilePackageGroup( "base" ), "@ base" )
+
+    def testCompileAddPackage(self):
+        self.assertEquals( compileAddPackage( "gcc" ), "gcc" )
+    
+    def testCompileDeletePackage( self ):
+        self.assertEquals( compileDeletePackage( "gcc" ), "-gcc" )
+
+    def testCompilePackageWithOption(self):
+        packages = Packages()
+        packages.addOption( "resolvedeps", "yes" )
+        self.assertEquals( packages.compile(), "%packages --resolvedeps\n" )
+
+    def testCompilePackageWithGroupOnly(self):
+        packages = Packages()
+        packages.addGroup( "base" )
+        expected="""%packages
+@ base
+"""
+        self.assertEquals( packages.compile(), expected )
+
+    def testCompilePackageAddOnly(self):
+        packages = Packages()
+        packages.addPkg( "gcc" )
+        expected="""%packages
+gcc
+"""
+        self.assertEquals( packages.compile(), expected )
+
+    def testCompilePackageDeleteOnly(self):
+        packages = Packages()
+        packages.deletePkg( "gcc" )
+        expected="""%packages
+-gcc
+"""
+        self.assertEquals( packages.compile(), expected )
+
+    def testCompilePackageMixed(self):
+        packages = Packages()
+        packages.addGroup( "base" )
+        packages.addGroup( "server" )
+        packages.addPkg( "gcc" )
+        packages.deletePkg( "ftp" )
+        expected="""%packages
+@ base
+@ server
+gcc
+-ftp
+"""
+        self.assertEquals( packages.compile(), expected )
+
+
 if __name__ == '__main__':
     unittest.main()
