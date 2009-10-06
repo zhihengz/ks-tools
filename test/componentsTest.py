@@ -1,7 +1,19 @@
 from rhks.components import *
 import unittest
+import os
 
+tmpFile="test.tmp"
+def createTmpFile( data ):
+    file = open( tmpFile, "w" )
+    file.write(data)
+    file.close()
+    
 class componentsTest(unittest.TestCase):
+
+    def tearDown( self ):
+        if os.path.exists( tmpFile ):
+            os.remove( tmpFile )
+
     def testCompileNameOnlyCommand(self):
         command = Command( "hello" )
         self.assertEqual( command.compile(), "hello")
@@ -108,6 +120,38 @@ gcc
 """
         self.assertEquals( packages.compile(), expected )
 
+    def testActionInclude(self):
+        preAction = Action( "pre" )
+        preAction.include( "hello.txt" )
+        self.assertEquals( len( preAction.includes ), 1 )
+        self.assertEquals( preAction.includes[0], "hello.txt" )
 
+    def testCompileActionOnly( self ):
+        preAction = Action( "pre" )
+        preAction.addOption( "interpreter", "/usr/bin" )
+        self.assertEquals( preAction.compile(), 
+                           "%pre --interpreter /usr/bin\n" )
+
+    def testCompileActionWithIncludeBase( self ):
+        data ="hello world"
+        createTmpFile( data )
+        action= Action( "pre" )
+        action.include( tmpFile )
+        expected="""%pre
+hello world
+"""
+        self.assertEquals( action.compile( os.path.abspath( os.path.dirname( tmpFile ) ) ), 
+                           expected )
+
+    def testCompileActionWithInclude( self ):
+        data ="hello world"
+        createTmpFile( data )
+        action= Action( "pre" )
+        action.include( tmpFile )
+        expected="""%pre
+hello world
+"""
+        self.assertEquals( action.compile(), expected )
+                           
 if __name__ == '__main__':
     unittest.main()

@@ -1,0 +1,8 @@
+<kickstart name="testActions">
+  <pre interpreter="/usr/bin/python">
+    <include src="preks.py"/>
+  </pre>
+  <post nochroot="yes">
+    <include src="postks.sh"/>
+  </post>
+</kickstart>

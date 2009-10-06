@@ -76,11 +76,35 @@ class Packages(Directive):
             ret += compileDeletePackage( pName ) + "\n"
         return ret
 
+class Action(Directive):
+    def __init__( self, name ):
+        Directive.__init__( self, name )
+        self.includes=[]
+        
+    def include( self, filePath ):
+        self.includes.append( filePath )
+
+    def compile( self, includeBaseDir=None ):
+        ret= "%" + self.name + self.compileOptions() + "\n"
+        for includeFile in self.includes:
+            if includeBaseDir == None:
+                filePath = includeFile
+            else:
+                filePath = includeBaseDir + "/" + includeFile
+            file = open( filePath, "r" )
+            ret += file.read()
+            ret += "\n"
+
+        return ret
+
 class Kickstart:
     def __init__(self, name ):
         self.name = name
         self.commands = []
         self.packages = None
+        self.preAction = None
+        self.postAction = None
+        self.srcDir=None
 
     def addCommand( self, command ):
         self.commands.append( command )

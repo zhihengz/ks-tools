@@ -1,0 +1,40 @@
+<kickstart name="testFull">
+  <command>
+    <lang>en_US</lang>
+    <langsupport>en_US</langsupport>
+    <keyboard>us</keyboard>
+    <mouse/>
+    <timezone>America/Chicago</timezone>
+    <rootpw iscrypted="yes">something</rootpw>
+    <install/>
+    <cdrom/>
+    <zerombr>yes</zerombr>
+    <auth useshadow="yes" enablemd5="yes"/>
+    <firewall disabled="yes"/>
+    <selinux disabled="yes"/>
+    <xconfig depth="32" resolution="1024x768" 
+             defaultdesktop="GNOME"
+             monitor="Monitor 1600x1200"/>
+    <include>/tmp/ks.part</include>
+    <include>/tmp/nework.ks</include>
+  </command>
+  <packages resolvedeps="yes">
+    <group>base</group>
+    <group>core</group>
+    <group>server</group>
+    <group>base-x</group>
+    <group>gnome-desktop</group>
+    <group>system-tools</group>
+    <group>compat-arch-support</group>
+    <group>rhcs</group>
+    <group>graphical-internet</group>
+    <addpackage>gcc</addpackage>
+    <rmpackage>ftp</rmpackage>
+  </packages>
+  <pre interpreter="/usr/bin/python">
+    <include src="preks.py"/>
+  </pre>
+  <post nochroot="yes">
+    <include src="postks.sh"/>
+  </post>
+</kickstart>

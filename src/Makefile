@@ -8,5 +8,6 @@ test:
 	@echo "testing ksxml2cfg.py"
 	@for f in data/*.xml; \
 	do \
+		echo "compiling $$f" && \
 		python ksxml2cfg.py "$$f";\
 	done

@@ -26,7 +26,10 @@ def parseKickstart( node ):
             parseCommands( ks, cmdNode )
         for pkgsNode in node.getElementsByTagName( "packages" ):
             ks.setPackages( parsePackages( pkgsNode ) )
- 
+        for actionNode in node.getElementsByTagName( "pre" ):
+            ks.preAction = parseAction( actionNode )
+        for actionNode in node.getElementsByTagName( "post" ):
+            ks.postAction = parseAction( actionNode )
         return ks
     else:
         return None
@@ -57,6 +60,13 @@ def parseCommand( node ):
     command.value = getNodeText( node )
     parseDirectiveOptions( command, node )
     return command
+
+def parseAction( node ):
+    action = Action( node.localName )
+    parseDirectiveOptions( action, node )
+    for includeNode in node.getElementsByTagName( "include" ):
+        action.include( includeNode.attributes[ "src" ].value )
+    return action
 
 def parseKickstartXmlSource( filename ):
     doc = xml.dom.minidom.parse( filename )
