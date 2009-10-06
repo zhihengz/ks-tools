@@ -1,4 +1,10 @@
 
+def escapeValue( value ):
+    ret = value
+    if value.find( " " ) > 0 :
+        ret = "\"" + value + "\""
+    return ret
+
 class Directive:
     def __init__(self, name):
         self.name = name;
@@ -7,7 +13,12 @@ class Directive:
     def compileOptions(self):
         ret=""
         for key, value in self.options.iteritems():
-            ret += " --" + key + " " + value
+            optionValue = " --" + key
+            if value == "no":
+                optionValue = ""
+            elif not value == "yes":
+                optionValue += " " + escapeValue( value )
+            ret += optionValue
         return ret
     
     def compile(self):

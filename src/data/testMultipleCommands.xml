@@ -1,6 +1,7 @@
 <kickstart name="testMultipleCommands">
   <command>
     <lang>en_US</lang>
-    <xconfig screen="1620x1380"/>
+    <xconfig screen="1620x1380" name="test screen xconfig"/>
+    <selinux disabled="yes"/>
   </command>
 </kickstart>

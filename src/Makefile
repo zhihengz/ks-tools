@@ -5,6 +5,7 @@ clean:
 	cd rhks && $(MAKE) clean
 	cd data && rm -fr *~ && rm -fr *.cfg
 test:
+	@echo "testing ksxml2cfg.py"
 	@for f in data/*.xml; \
 	do \
 		python ksxml2cfg.py "$$f";\

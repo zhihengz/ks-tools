@@ -20,7 +20,21 @@ class componentsTest(unittest.TestCase):
         command = Command( "hello" )
         command.addOption( "config", "test.conf")
         command.addOption( "out", "test.out")
-        self.assertEquals( command.compile(), "hello --config test.conf --out test.out")
+        self.assertEquals( command.compile(), 
+                           "hello --config test.conf --out test.out")
+
+    def testCompileCommandWithFlatOption( self ):
+        command = Command( "hello" )
+        command.addOption( "debug", "yes" )
+        self.assertEquals( command.compile(), "hello --debug" )
+        command = Command( "hello" )
+        command.addOption( "debug", "no" )
+        self.assertEquals( command.compile(), "hello" )
+
+    def testCompileCommandWithSpaceEscape( self ):
+        command = Command( "hello" )
+        command.addOption( "name", "hello world" )
+        self.assertEquals( command.compile(), "hello --name \"hello world\"" )
 
     def testAddPkgGroup(self):
         packages = Packages()
