@@ -36,6 +36,11 @@ class componentsTest(unittest.TestCase):
         command.addOption( "name", "hello world" )
         self.assertEquals( command.compile(), "hello --name \"hello world\"" )
 
+    def testCompileIncludeCommand( self ):
+        command = Command( "include" )
+        command.value="/tmp/network.ks"
+        self.assertEquals( command.compile(), "%include /tmp/network.ks" )
+
     def testAddPkgGroup(self):
         packages = Packages()
         packages.addGroup( "group_a" )

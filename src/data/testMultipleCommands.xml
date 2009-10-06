@@ -3,5 +3,7 @@
     <lang>en_US</lang>
     <xconfig screen="1620x1380" name="test screen xconfig"/>
     <selinux disabled="yes"/>
+    <include>/tmp/network.ks</include>
+    <include>/tmp/partition.ks</include>
   </command>
 </kickstart>

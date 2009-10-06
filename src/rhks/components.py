@@ -30,7 +30,10 @@ class Command(Directive):
         self.value=None
 
     def compile(self):
-        ret = self.name + self.compileOptions()
+        outName = self.name
+        if self.name == "include":
+            outName = "%" + self.name
+        ret = outName + self.compileOptions()
         if not self.value == None:
             ret += " " + self.value
         return ret
