@@ -1,0 +1,5 @@
+<kickstart name="testSingleCommand">
+  <command>
+    <lang>en_US</lang>
+  </command>
+</kickstart>
