@@ -123,8 +123,7 @@ gcc
     def testActionInclude(self):
         preAction = Action( "pre" )
         preAction.include( "hello.txt" )
-        self.assertEquals( len( preAction.includes ), 1 )
-        self.assertEquals( preAction.includes[0], "hello.txt" )
+        self.assertOnlyItemInSet( "hello.txt", preAction.includes )
 
     def testCompileActionOnly( self ):
         preAction = Action( "pre" )

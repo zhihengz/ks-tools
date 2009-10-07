@@ -76,10 +76,10 @@ class Packages(Directive):
 class Action(Directive):
     def __init__( self, name ):
         Directive.__init__( self, name )
-        self.includes=[]
+        self.includes=set([])
         
     def include( self, filePath ):
-        self.includes.append( filePath )
+        self.includes.add( filePath )
 
     def compile( self, includeBaseDir=None ):
         ret= "%" + self.name + self.compileOptions() + "\n"

@@ -185,11 +185,15 @@ class parserTest(unittest.TestCase):
         self.assertEquals( action.name, name )
         self.assertEquals( action.options[ "interpreter" ],
                            "/usr/bin/python" )
-        self.assertEquals( action.includes[0], "test.tmp" )
+        self.assertOnlyItemInSet( "test.tmp", action.includes )
         
     def assertInclude( self, inc ):
         self.assertEquals( inc.name, "include" )
         self.assertEquals( inc.value, "/tmp/network.ks" )
+
+    def assertOnlyItemInSet( self, item, itemSet ):
+        self.assertEquals( len( itemSet ), 1 )
+        self.assertTrue( item in itemSet )
 
 if __name__ == '__main__':
     unittest.main()
