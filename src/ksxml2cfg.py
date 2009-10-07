@@ -1,8 +1,13 @@
-import sys,os
-from rhks import parser,components
+import getopt,sys,os
+from rhks import parser,components,log
 
-def print_usage():
-	print "usage: ksxml2cfg [FILE]"
+def print_usage( ):
+	print """usage: ksxml2cfg  [OPTIONS] [FILE]
+[OPTIONS] are:
+-h, --help              print this help information
+-v, --version           print version
+-o, --out=[FILE]        output file
+"""
 
 def build( kickstart, filename ):
     file = open(filename, "w" )
@@ -23,13 +28,41 @@ def getAbsDir( fileName ):
         return os.path.abspath( dirname )
 
 def main():
-	if len(sys.argv) < 2:
-		print_usage()
-		sys.exit(1)
-        inFile = sys.argv[1]
+        version= "1.0.0"
+        author="Zhiheng Zhang"
+        shortOpts = "hvo:"
+        longOpts = [ "help", "version", "out=" ]
+        outFile = None
+        try:
+                opts, args = getopt.getopt( sys.argv[1:], 
+                                            shortOpts,
+                                            longOpts )
+        except getopt.GetoptError:
+                log.print_error( "non-recognized command line arguments" )
+                print_usage( )
+                sys.exit( 1 )
+
+        for o, a in opts:
+                if o == "--help" or o == "-h":
+                        print_usage()
+                        sys.exit( 0 )
+                elif o == "--version" or o == "-v":
+                        print "ksxml2cfg version " + version + " by " + author
+                        sys.exit(0 )
+                elif o == "--out" or o == "-o":
+                        outFile = a
+        if len( args ) < 1:
+                log.print_error( "no input file" )
+                print_usage( 1 )
+                sys.exit( 1 )
+
+        inFile = args[0]
 	ks = parser.parseKickstartXmlSource( inFile )
         ks.srcDir= getAbsDir( inFile )
-	build(ks, ks.srcDir + "/" + ks.name + ".cfg" )
+
+        if outFile == None:
+                outFile = ks.srcDir + "/" + ks.name + ".cfg"
+	build(ks, outFile )
 
 if __name__ == "__main__":
 	main()
