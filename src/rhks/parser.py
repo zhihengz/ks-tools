@@ -21,7 +21,10 @@ def getNodeText( aNode):
 
 def parseKickstart( node ):
     if node.localName == 'kickstart':
-        ks = Kickstart( node.attributes["name"].value )
+        if node.hasAttribute( "name" ):
+            ks = Kickstart( node.getAttribute( "name") )
+        else:
+            ks = Kickstart( "ks" )
         for cmdNode in node.getElementsByTagName( "command" ):
             parseCommands( ks, cmdNode )
         for pkgsNode in node.getElementsByTagName( "packages" ):

@@ -109,6 +109,11 @@ class parserTest(unittest.TestCase):
         ks = parseKickstart( node )
         self.assertEquals( ks.name, "test" )
 
+    def testParseNonameKickstart( self ):
+        node = self.createNode( "<kickstart></kickstart>" )
+        ks = parseKickstart( node )
+        self.assertNotEquals( ks, None )
+
     def testParseKickstartWithCommands( self ):
         node = self.createNode( self.ksXmlWithCommand )
         ks = parseKickstart( node )
