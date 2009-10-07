@@ -30,6 +30,9 @@ def parseKickstart( node ):
             ks.preAction = parseAction( actionNode )
         for actionNode in node.getElementsByTagName( "post" ):
             ks.postAction = parseAction( actionNode )
+        incNodes = [ e for e in node.childNodes if e.nodeType == e.ELEMENT_NODE and e.localName == "include" ]
+        for incNode in incNodes:
+            ks.includes.append ( parseIncludeMacro( incNode ) )
         return ks
     else:
         return None
@@ -43,6 +46,11 @@ def parseCommands( ks, node ):
 def parseDirectiveOptions( directive, node ):
     for attrName in node.attributes.keys():
         directive.addOption( attrName, node.attributes[ attrName ].value )
+
+def parseIncludeMacro( node ):
+    inc = IncludeMacro()
+    inc.value = getNodeText( node )
+    return inc
 
 def parsePackages( node ):
     packages = Packages()

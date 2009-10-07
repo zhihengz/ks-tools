@@ -15,9 +15,9 @@
     <xconfig depth="32" resolution="1024x768" 
              defaultdesktop="GNOME"
              monitor="Monitor 1600x1200"/>
-    <include>/tmp/ks.part</include>
-    <include>/tmp/nework.ks</include>
   </command>
+  <include>/tmp/ks.part</include>
+  <include>/tmp/nework.ks</include>
   <packages resolvedeps="yes">
     <group>base</group>
     <group>core</group>

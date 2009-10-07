@@ -48,10 +48,10 @@ class componentsTest(unittest.TestCase):
         command.addOption( "name", "hello world" )
         self.assertEquals( command.compile(), "hello --name \"hello world\"" )
 
-    def testCompileIncludeCommand( self ):
-        command = Command( "include" )
-        command.value="/tmp/network.ks"
-        self.assertEquals( command.compile(), "%include /tmp/network.ks" )
+    def testCompileIncludeMacro( self ):
+        inc = IncludeMacro( )
+        inc.value="/tmp/network.ks"
+        self.assertEquals( inc.compile(), "%include /tmp/network.ks\n" )
 
     def testAddPkgGroup(self):
         packages = Packages()

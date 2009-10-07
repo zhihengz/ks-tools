@@ -7,7 +7,9 @@ def print_usage():
 def build( kickstart, filename ):
     file = open(filename, "w" )
     for command in kickstart.commands:
-        file.write( command.compile() + "\n" )
+	    file.write( command.compile() + "\n" )
+    for includeMacro in kickstart.includes:
+	    file.write( includeMacro.compile() )
     if not kickstart.packages == None :
             file.writelines( kickstart.packages.compile() )
     if not kickstart.preAction == None :

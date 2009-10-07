@@ -33,10 +33,7 @@ class Command(Directive):
         self.value=None
 
     def compile(self):
-        outName = self.name
-        if self.name == "include":
-            outName = "%" + self.name
-        ret = outName + self.compileOptions()
+        ret = self.name + self.compileOptions()
         if not self.value == None:
             ret += " " + self.value
         return ret
@@ -97,6 +94,15 @@ class Action(Directive):
 
         return ret
 
+class IncludeMacro(Directive):
+    def __init__( self ):
+        Directive.__init__( self, "include" )
+        self.value = None
+
+    def compile( self ):
+        ret = "%" + self.name + " " + self.value + "\n"
+        return ret
+
 class Kickstart:
     def __init__(self, name ):
         self.name = name
@@ -104,6 +110,7 @@ class Kickstart:
         self.packages = None
         self.preAction = None
         self.postAction = None
+        self.includes= []
         self.srcDir=None
 
     def addCommand( self, command ):

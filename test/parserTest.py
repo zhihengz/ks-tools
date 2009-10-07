@@ -33,6 +33,11 @@ class parserTest(unittest.TestCase):
 </post>
 </kickstart>
 """
+        self.ksXmlWithIncludes = """
+<kickstart name="test">
+<include>/tmp/network.ks</include>
+</kickstart>
+"""
     def createNode( self, xmlText ):
         doc = xml.dom.minidom.parseString( xmlText )
         return doc.documentElement
@@ -63,6 +68,11 @@ class parserTest(unittest.TestCase):
         self.assertEquals( len(ks.commands), 1 )
         command = ks.commands[0]
         self.assertEquals( command.name, "lang" )
+
+    def testParseIncludes( self ):
+        node = self.createNode( "<include>/tmp/network.ks</include>" )
+        inc = parseIncludeMacro( node )
+        self.assertInclude( inc )
 
     def testParsePackages( self ):
         xmldata = """<packages resolvedeps="yes">
@@ -115,6 +125,26 @@ class parserTest(unittest.TestCase):
         self.assertAction( ks.preAction, "pre" )
         self.assertAction( ks.postAction, "post" )
 
+    def testParseKickstartWithIncludes( self ):
+        node = self.createNode( self.ksXmlWithIncludes )
+        ks= parseKickstart( node )
+        self.assertEquals( len( ks.includes ), 1 )
+        self.assertInclude( ks.includes[0] )
+
+    def testParseKickstartWithMultipleDepthIncludes( self ): 
+        xmldata = """
+<kickstart name="test">
+<include>/tmp/network.ks</include>
+<pre>
+<include src="test"/>
+</pre>
+</kickstart>
+"""
+        node = self.createNode( xmldata )
+        ks= parseKickstart( node )
+        self.assertEquals( len( ks.includes ), 1 )
+        self.assertInclude( ks.includes[0] )
+
     def testParseKickstartXmlSource( self ):
         ks = self.parseKickstartFromXmlSource( self.ksXmlWithCommand )
         self.assertCommandInKickstartParse( ks )
@@ -123,7 +153,8 @@ class parserTest(unittest.TestCase):
         ks = self.parseKickstartFromXmlSource( self.ksXmlWithActions )
         self.assertAction( ks.preAction, "pre" )
         self.assertAction( ks.postAction, "post" )
-
+        ks = self.parseKickstartFromXmlSource( self.ksXmlWithIncludes )
+        self.assertInclude( ks.includes[0] )
     def parseKickstartFromXmlSource( self, xmldata ):
         file = open( "test.xml", "w" )
         file.write( xmldata )
@@ -151,5 +182,9 @@ class parserTest(unittest.TestCase):
                            "/usr/bin/python" )
         self.assertEquals( action.includes[0], "test.tmp" )
         
+    def assertInclude( self, inc ):
+        self.assertEquals( inc.name, "include" )
+        self.assertEquals( inc.value, "/tmp/network.ks" )
+
 if __name__ == '__main__':
     unittest.main()

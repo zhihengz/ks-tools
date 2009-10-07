@@ -1,0 +1,4 @@
+<kickstart name="testIncludes">
+  <include>/tmp/network.ks</include>
+  <include>/tmp/partition.ks</include>
+</kickstart>
