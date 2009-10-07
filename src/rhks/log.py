@@ -1,4 +1,9 @@
 
+def print_error( msg ):
+    """print error messgae
+    """
+    print "ERROR:   " + msg
+
 def print_info( msg ):
     """print info level message
     """
