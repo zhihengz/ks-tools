@@ -1,5 +1,7 @@
-PYTHON_LIB=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
+PYTHON_LIB=$(shell python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
 BIN_BASE=/usr/bin
+xml_data_files := $(wildcard data/*.xml)
+data_prefixes := $(patsubst %.xml,%,${xml_data_files})
 all:	ksxml2cfg test
 clean:
 	rm -f ksxml2cfg
@@ -8,13 +10,13 @@ clean:
 	cd rhks && $(MAKE) clean
 	cd data && rm -fr *~ && rm -fr *.cfg
 test:
+	@echo $(PYTHON_LIB)
 	@echo "testing ksxml2cfg.py"
-	@for f in data/*.xml; \
+	@for f in $(data_prefixes); \
 	do \
-		echo "compiling $$f" && \
-		python ksxml2cfg.py "$$f";\
+		echo "compiling $$f" ; \
+		python ksxml2cfg.py -o $(addsuffix .cfg, $$f) $(addsuffix .xml, $$f);\
 	done
-
 ksxml2cfg:	ksxml2cfg.py
 	@echo "creating shell script wrapper" && \
 	echo "#!/usr/bin/python" >ksxml2cfg && \
@@ -28,3 +30,10 @@ install:
 	install -m 644 rhks/parser.py $(DESTDIR)$(PYTHON_LIB)/rhks/parser.py	
 	install -m 644 rhks/__init__.py $(DESTDIR)$(PYTHON_LIB)/rhks/__init__.py
 	install -m 644 rhks/log.py $(DESTDIR)$(PYTHON_LIB)/rhks/log.py
+
+play:
+	@for f in $(data_prefixes); \
+	do \
+		echo $(addsuffix .cfg, $$f); \
+	done
+
