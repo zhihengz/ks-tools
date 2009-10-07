@@ -163,6 +163,20 @@ hello world
         inc2.value ="other"
         self.assertFalse( inc1 == inc2 )
         
+    def testCompareIncludeMacro( self ):
+        cmd1 = Command( "cmd1" )
+        self.assertFalse( cmd1 == None )
+        cmd2 = Command( "cmd2" )
+        self.assertFalse( cmd1 == cmd2 )
+        self.assertNotEquals( cmd1, cmd2 )
+        cmd3 = Command( "cmd1" )
+        self.assertTrue( cmd1 == cmd3 )
+        self.assertEquals( cmd1, cmd3 )
+        cmd1.addOption( "hello", "world" )
+        cmd3.addOption( "hello", "anotherWorld" )
+        self.assertTrue( cmd1 == cmd3 )
+        self.assertEquals( cmd1, cmd3 )
+        
     def assertOnlyItemInSet( self, item, itemSet ):
         self.assertEquals( len( itemSet ), 1 )
         self.assertTrue( item in itemSet )

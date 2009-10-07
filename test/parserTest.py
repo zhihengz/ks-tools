@@ -65,9 +65,7 @@ class parserTest(unittest.TestCase):
         node = self.createNode( "<command><lang/></command>")
         ks = Kickstart( "test" )
         parseCommands( ks, node )
-        self.assertEquals( len(ks.commands), 1 )
-        command = ks.commands[0]
-        self.assertEquals( command.name, "lang" )
+        self.assertOnlyItemInSet( Command( "lang" ), ks.commands )
 
     def testParseIncludes( self ):
         node = self.createNode( "<include>/tmp/network.ks</include>" )
@@ -170,10 +168,9 @@ class parserTest(unittest.TestCase):
 
     def assertCommandInKickstartParse( self, ks ):
 
-        self.assertEquals( len( ks.commands ), 1 )
-        command = ks.commands[0]
-        self.assertEquals( command.name, "lang" )
-        self.assertEquals( command.value, "us" )
+        expected = Command( "lang" )
+        expected.value = "us"
+        self.assertOnlyItemInSet( expected, ks.commands )
 
     def assertPackages( self, packages ):
         self.assertEquals( packages.options[ "resolvedeps" ], "yes" )

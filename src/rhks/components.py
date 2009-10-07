@@ -38,6 +38,21 @@ class Command(Directive):
             ret += " " + self.value
         return ret
 
+    def __eq__(self, other ):
+        if other == None:
+            return False
+        return self.name == other.name
+
+    def __ne__(self, other ):
+        if other == None:
+            return False
+        return not self.name == other.name
+
+    def __hash__(self):
+        if self.name == None:
+            return None
+        return self.name.__hash__()
+
 def compilePackageGroup( gName ):
     return "@ " + gName
 
@@ -121,7 +136,7 @@ class IncludeMacro(Directive):
 class Kickstart:
     def __init__(self, name ):
         self.name = name
-        self.commands = []
+        self.commands = set([])
         self.packages = None
         self.preAction = None
         self.postAction = None
@@ -129,7 +144,7 @@ class Kickstart:
         self.srcDir=None
 
     def addCommand( self, command ):
-        self.commands.append( command )
+        self.commands.add( command )
 
     def setPackages( self, packages):
         self.packages = packages
