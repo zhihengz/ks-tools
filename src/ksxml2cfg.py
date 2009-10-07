@@ -1,4 +1,3 @@
-#!/usr/bin/python -t
 import sys,os
 from rhks import parser,components
 
