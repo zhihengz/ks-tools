@@ -50,18 +50,18 @@ def compileDeletePackage( pName ):
 class Packages(Directive):
     def __init__(self):
         Directive.__init__(self,"packages")
-        self.groups=[]
-        self.rmpkgs=[]
-        self.addpkgs=[]
+        self.groups=set([])
+        self.rmpkgs=set([])
+        self.addpkgs=set([])
 
     def addGroup(self,groupName):
-        self.groups.append( groupName )
+        self.groups.add( groupName )
 
     def addPkg(self,pkgName):
-        self.addpkgs.append( pkgName )
+        self.addpkgs.add( pkgName )
 
     def deletePkg(self, pkgName ):
-        self.rmpkgs.append( pkgName )
+        self.rmpkgs.add( pkgName )
 
     def compile(self):
         ret = "%" + self.name + self.compileOptions() + "\n"

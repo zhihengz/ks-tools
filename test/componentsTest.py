@@ -56,17 +56,17 @@ class componentsTest(unittest.TestCase):
     def testAddPkgGroup(self):
         packages = Packages()
         packages.addGroup( "group_a" )
-        self.assertEquals( packages.groups[0], "group_a" )
+        self.assertOnlyItemInSet( "group_a", packages.groups )
 
     def testAddPkg(self):
         packages = Packages()
         packages.addPkg( "pkg_a" )
-        self.assertEquals( packages.addpkgs[0], "pkg_a" )
+        self.assertOnlyItemInSet( "pkg_a", packages.addpkgs )
 
     def testDeletePkg(self):
         packages = Packages()
         packages.deletePkg( "pkg_a" )
-        self.assertEquals( packages.rmpkgs[0], "pkg_a" )
+        self.assertOnlyItemInSet( "pkg_a", packages.rmpkgs )
 
     def testCompilePackageGroup(self):
         self.assertEquals( compilePackageGroup( "base" ), "@ base" )
@@ -152,6 +152,9 @@ hello world
 hello world
 """
         self.assertEquals( action.compile(), expected )
-                           
+   
+    def assertOnlyItemInSet( self, item, itemSet ):
+        self.assertEquals( len( itemSet ), 1 )
+        self.assertTrue( item in itemSet )
 if __name__ == '__main__':
     unittest.main()
