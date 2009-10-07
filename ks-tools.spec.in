@@ -1,0 +1,49 @@
+Summary: ks-tools
+Name: %{pkgname}
+Version: %{ver}
+Release: %{rel}.fc11
+License: GPL
+BuildArch: noarch
+Group: Development/Tools/Building
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+
+%description
+ks-tools rpm packaging
+%prep
+%setup -q
+
+%build
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make &&
+make install DESTDIR=$RPM_BUILD_ROOT
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root,-)
+/usr/bin/ksxml2cfg
+/usr/lib/python2.6/site-packages/rhks/__init__.py
+/usr/lib/python2.6/site-packages/rhks/__init__.pyc
+/usr/lib/python2.6/site-packages/rhks/__init__.pyo
+/usr/lib/python2.6/site-packages/rhks/components.py
+/usr/lib/python2.6/site-packages/rhks/components.pyc
+/usr/lib/python2.6/site-packages/rhks/components.pyo
+/usr/lib/python2.6/site-packages/rhks/log.py
+/usr/lib/python2.6/site-packages/rhks/log.pyc
+/usr/lib/python2.6/site-packages/rhks/log.pyo
+/usr/lib/python2.6/site-packages/rhks/parser.py
+/usr/lib/python2.6/site-packages/rhks/parser.pyc
+/usr/lib/python2.6/site-packages/rhks/parser.pyo
+
+%doc
+
+
+%changelog
+* Tue Oct 06 2009 Jason Zhang <jzhang@gmail.com>
+- Initial build for ks-tools
+
