@@ -3,7 +3,7 @@ import sys,os
 from rhks import parser,components
 
 def print_usage():
-	print "usage: ksxml2cfg <xml file>"
+	print "usage: ksxml2cfg [FILE]"
 
 def build( kickstart, filename ):
     file = open(filename, "w" )
