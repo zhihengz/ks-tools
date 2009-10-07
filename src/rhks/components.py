@@ -102,6 +102,21 @@ class IncludeMacro(Directive):
     def compile( self ):
         ret = "%" + self.name + " " + self.value + "\n"
         return ret
+    
+    def __eq__(self, other ):
+        if other == None:
+            return False
+        return self.value == other.value
+
+    def __ne__(self, other ):
+        if other == None:
+            return False
+        return not self.value == other.value
+
+    def __hash__(self):
+        if self.value == None:
+            return None
+        return self.value.__hash__()
 
 class Kickstart:
     def __init__(self, name ):
@@ -110,7 +125,7 @@ class Kickstart:
         self.packages = None
         self.preAction = None
         self.postAction = None
-        self.includes= []
+        self.includes= set([])
         self.srcDir=None
 
     def addCommand( self, command ):

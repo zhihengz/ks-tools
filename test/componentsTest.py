@@ -152,6 +152,17 @@ hello world
 """
         self.assertEquals( action.compile(), expected )
    
+    def testCompareIncludeMacro( self ):
+        inc1 = IncludeMacro()
+        inc1.value = "test"
+        self.assertFalse( inc1 == None )
+        inc2 = IncludeMacro()
+        inc2.value = "test"
+        self.assertTrue( inc1 == inc2 )
+        self.assertEquals( inc2, inc1 )
+        inc2.value ="other"
+        self.assertFalse( inc1 == inc2 )
+        
     def assertOnlyItemInSet( self, item, itemSet ):
         self.assertEquals( len( itemSet ), 1 )
         self.assertTrue( item in itemSet )

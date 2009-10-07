@@ -134,7 +134,7 @@ class parserTest(unittest.TestCase):
         node = self.createNode( self.ksXmlWithIncludes )
         ks= parseKickstart( node )
         self.assertEquals( len( ks.includes ), 1 )
-        self.assertInclude( ks.includes[0] )
+        self.assertIncludes( ks.includes )
 
     def testParseKickstartWithMultipleDepthIncludes( self ): 
         xmldata = """
@@ -148,7 +148,7 @@ class parserTest(unittest.TestCase):
         node = self.createNode( xmldata )
         ks= parseKickstart( node )
         self.assertEquals( len( ks.includes ), 1 )
-        self.assertInclude( ks.includes[0] )
+        self.assertIncludes( ks.includes )
 
     def testParseKickstartXmlSource( self ):
         ks = self.parseKickstartFromXmlSource( self.ksXmlWithCommand )
@@ -159,7 +159,7 @@ class parserTest(unittest.TestCase):
         self.assertAction( ks.preAction, "pre" )
         self.assertAction( ks.postAction, "post" )
         ks = self.parseKickstartFromXmlSource( self.ksXmlWithIncludes )
-        self.assertInclude( ks.includes[0] )
+        self.assertIncludes( ks.includes )
     def parseKickstartFromXmlSource( self, xmldata ):
         file = open( "test.xml", "w" )
         file.write( xmldata )
@@ -187,9 +187,13 @@ class parserTest(unittest.TestCase):
                            "/usr/bin/python" )
         self.assertOnlyItemInSet( "test.tmp", action.includes )
         
-    def assertInclude( self, inc ):
-        self.assertEquals( inc.name, "include" )
-        self.assertEquals( inc.value, "/tmp/network.ks" )
+    def assertInclude( self, include ):
+        self.assertEquals( include.value, "/tmp/network.ks" )
+
+    def assertIncludes( self, includeSet ):
+        inc = IncludeMacro()
+        inc.value = "/tmp/network.ks"
+        self.assertOnlyItemInSet( inc, includeSet )
 
     def assertOnlyItemInSet( self, item, itemSet ):
         self.assertEquals( len( itemSet ), 1 )

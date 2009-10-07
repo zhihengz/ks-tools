@@ -35,7 +35,7 @@ def parseKickstart( node ):
             ks.postAction = parseAction( actionNode )
         incNodes = [ e for e in node.childNodes if e.nodeType == e.ELEMENT_NODE and e.localName == "include" ]
         for incNode in incNodes:
-            ks.includes.append ( parseIncludeMacro( incNode ) )
+            ks.includes.add ( parseIncludeMacro( incNode ) )
         return ks
     else:
         return None
