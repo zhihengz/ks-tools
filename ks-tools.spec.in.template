@@ -1,0 +1,49 @@
+Summary: ks-tools
+Name: %{pkgname}
+Version: %{ver}
+Release: %{rel}DIST
+License: GPL
+BuildArch: noarch
+Group: Development/Tools/Building
+Source0: %{name}-%{version}.tar.gz
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+
+%description
+ks-tools rpm packaging
+%prep
+%setup -q
+
+%build
+
+%install
+rm -rf $RPM_BUILD_ROOT
+make &&
+make install DESTDIR=$RPM_BUILD_ROOT
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+
+%files
+%defattr(-,root,root,-)
+/usr/bin/ksxml2cfg
+PYTHONLIB/rhks/__init__.py
+PYTHONLIB/rhks/__init__.pyc
+PYTHONLIB/rhks/__init__.pyo
+PYTHONLIB/rhks/components.py
+PYTHONLIB/rhks/components.pyc
+PYTHONLIB/rhks/components.pyo
+PYTHONLIB/rhks/log.py
+PYTHONLIB/rhks/log.pyc
+PYTHONLIB/rhks/log.pyo
+PYTHONLIB/rhks/parser.py
+PYTHONLIB/rhks/parser.pyc
+PYTHONLIB/rhks/parser.pyo
+
+%doc
+
+
+%changelog
+* Tue Oct 06 2009 Jason Zhang <jzhang@gmail.com>
+- Initial build for ks-tools
+
