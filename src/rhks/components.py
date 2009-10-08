@@ -6,6 +6,11 @@ def escapeValue( value ):
         ret = "\"" + value + "\""
     return ret
 
+def addItemWithoutDuplicate( item, itemSet, what ):
+    if item in itemSet:
+        raise DuplicationError( what + " is duplicated" )
+    itemSet.add( item )
+
 class Directive:
     def __init__(self, name):
         self.name = name;
@@ -71,13 +76,15 @@ class Packages(Directive):
         self.addpkgs=set([])
 
     def addGroup(self,groupName):
-        self.groups.add( groupName )
+        addItemWithoutDuplicate( groupName, self.groups, "group " + groupName )
 
     def addPkg(self,pkgName):
-        self.addpkgs.add( pkgName )
+        addItemWithoutDuplicate( pkgName, self.addpkgs, 
+                                 "adding package " + pkgName )
 
     def deletePkg(self, pkgName ):
-        self.rmpkgs.add( pkgName )
+        addItemWithoutDuplicate( pkgName, self.rmpkgs, 
+                                 "deleting package " + pkgName )
 
     def compile(self):
         ret = "%" + self.name + self.compileOptions() + "\n"
@@ -88,6 +95,14 @@ class Packages(Directive):
         for pName in self.rmpkgs:
             ret += compileDeletePackage( pName ) + "\n"
         return ret
+
+    def merge(self, pkgs):
+        for group in pkgs.groups:
+            self.addGroup( group )
+        for pkg in pkgs.addpkgs:
+            self.addPkg( pkg )
+        for pkg in pkgs.rmpkgs:
+            self.deletePkg( pkg )
 
 class Action(Directive):
     def __init__( self, name ):
@@ -145,19 +160,19 @@ class Kickstart:
         self.srcDir=None
 
     def addCommand( self, command ):
-        if command in self.commands:
-            raise DuplicationError( "command " + command.name + 
-                                    " is duplicated" )
-        self.commands.add( command )
-
+        addItemWithoutDuplicate( command, 
+                                 self.commands, 
+                                 "command " + command.name )
     def addPackages( self, packages):
-        self.packages = packages
+        if self.packages == None:
+            self.packages = packages
+        else:
+            self.packages.merge( packages )
 
     def addInclude( self, include ):
 
-        if include in self.includes:
-            raise DuplicationError( include.value + " inclusion is duplicated" )
-        self.includes.add( include )
+        addItemWithoutDuplicate( include, self.includes, 
+                                 include.value + " inclusion" )
 
     def merge( self, ks ):
         
@@ -166,3 +181,5 @@ class Kickstart:
 
         for include in ks.includes:
             self.addInclude( include )
+
+        self.addPackages( ks.packages )

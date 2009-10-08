@@ -25,6 +25,7 @@ test_file_exists()
 test_file_nonexists testDuplicateCommands.cfg
 test_file_nonexists testDuplicateIncludess.cfg
 test_file_nonexists dupcmd.cfg
+test_file_nonexists duppkgs.cfg
 test_file_exists testActions.cfg
 test_file_exists testIncludes.cfg
 test_file_exists testPackages.cfg

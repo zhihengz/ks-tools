@@ -201,6 +201,32 @@ hello world
         else:
             self.fail( "expected duplication error" )
 
+    def testDuplicatedPackages( self ):
+        pkgs = Packages()
+        pkgs.addGroup( "group1" )
+        pkgs.addPkg( "pkg1" )
+        pkgs.deletePkg( "pkg2" )
+        
+        try:
+            pkgs.addGroup( "group1" )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expected duplication error" )
+        try:
+            pkgs.addPkg( "pkg1" )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expected duplication error" )
+        try:
+            pkgs.deletePkg( "pkg2" )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expected duplication error" )
+
+
     def testMergeKickstartWithCommands( self ):
         ks1 = Kickstart( "test" )
         ks2 = Kickstart( "test2" )
@@ -242,6 +268,53 @@ hello world
         else:
             self.fail( "expected duplication include error" )
         
+    def testMergePackages( self ):
+        pkgs1 = Packages()
+        pkgs2 = Packages()
+        pkgs2.addGroup( "base" )
+        pkgs2.addPkg( "pkgadd" )
+        pkgs2.deletePkg( "pkgdel" )
+        pkgs1.merge( pkgs2 )
+        self.assertOnlyItemInSet( "base", pkgs1.groups )
+        self.assertOnlyItemInSet( "pkgadd", pkgs1.addpkgs )
+        self.assertOnlyItemInSet( "pkgdel", pkgs1.rmpkgs )
+
+    def testMergeDuplicatePackageGroup( self ):
+        pkgs1 = Packages()
+        pkgs1.addGroup( "base" )
+        pkgs2 = Packages()
+        pkgs2.addGroup( "base" )
+        try:
+            pkgs1.merge( pkgs2 )
+        except DuplicationError:
+            pass
+        else:
+            fail( "expected duplication package group error" )
+
+    def testMergeDuplicateAddPackage( self ):
+        pkgs1 = Packages()
+        pkgs1.addPkg( "base" )
+        pkgs2 = Packages()
+        pkgs2.addPkg( "base" )
+        try:
+            pkgs1.merge( pkgs2 )
+        except DuplicationError:
+            pass
+        else:
+            fail( "expected duplication package add error" )
+
+    def testMergeDuplicateDeletePackage( self ):
+        pkgs1 = Packages()
+        pkgs1.deletePkg( "base" )
+        pkgs2 = Packages()
+        pkgs2.deletePkg( "base" )
+        try:
+            pkgs1.merge( pkgs2 )
+        except DuplicationError:
+            pass
+        else:
+            fail( "expected duplication package delete error" )
+
     def assertOnlyItemInSet( self, item, itemSet ):
         self.assertEquals( len( itemSet ), 1 )
         self.assertTrue( item in itemSet )
