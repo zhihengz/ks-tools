@@ -17,6 +17,7 @@ test:
 		echo "compiling $$f" ; \
 		python ksxml2cfg.py -o $(addsuffix .cfg, $$f) $(addsuffix .xml, $$f);\
 	done
+	@echo "checking results..." && data/testResult.sh
 ksxml2cfg:	ksxml2cfg.py
 	@echo "creating shell script wrapper" && \
 	echo "#!/usr/bin/python" >ksxml2cfg && \
@@ -30,10 +31,4 @@ install:
 	install -m 644 rhks/parser.py $(DESTDIR)$(PYTHON_LIB)/rhks/parser.py	
 	install -m 644 rhks/__init__.py $(DESTDIR)$(PYTHON_LIB)/rhks/__init__.py
 	install -m 644 rhks/log.py $(DESTDIR)$(PYTHON_LIB)/rhks/log.py
-
-play:
-	@for f in $(data_prefixes); \
-	do \
-		echo $(addsuffix .cfg, $$f); \
-	done
 
