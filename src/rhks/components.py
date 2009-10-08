@@ -158,3 +158,11 @@ class Kickstart:
         if include in self.includes:
             raise DuplicationError( include.value + " inclusion is duplicated" )
         self.includes.add( include )
+
+    def merge( self, ks ):
+        
+        for command in ks.commands:
+            self.addCommand( command )
+
+        for include in ks.includes:
+            self.addInclude( include )

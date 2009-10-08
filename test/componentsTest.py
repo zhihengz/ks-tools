@@ -201,6 +201,47 @@ hello world
         else:
             self.fail( "expected duplication error" )
 
+    def testMergeKickstartWithCommands( self ):
+        ks1 = Kickstart( "test" )
+        ks2 = Kickstart( "test2" )
+        ks2.addCommand( Command( "test" ) )
+        ks1.merge( ks2 )
+        self.assertOnlyItemInSet( Command( "test" ), ks1.commands )
+
+    def testMergeKickstartWithDupCommands( self ):
+        ks1 = Kickstart( "test1" )
+        ks1.addCommand( Command( "test" ) )
+        ks2 = Kickstart( "test2" )
+        ks2.addCommand( Command( "test" ) )
+        try:
+            ks1.merge( ks2 )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expected duplication command error" )
+
+    def testMergeKickstartWithIncludes( self ):
+        inc = createIncludeMacro( "test" )
+        ks1 = Kickstart( "test" )
+        ks2 = Kickstart( "test2" )
+        ks2.addInclude( inc )
+        ks1.merge( ks2 )
+        self.assertOnlyItemInSet( inc, ks1.includes )
+
+    def testMergeKickstartWithDupIncludes( self ):
+        inc = createIncludeMacro( "test" )
+        ks1 = Kickstart( "test" )
+        ks1.addInclude( inc )
+        ks2 = Kickstart( "test2" )
+        ks2.addInclude( inc )
+        
+        try:
+            ks1.merge( ks2 )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expected duplication include error" )
+        
     def assertOnlyItemInSet( self, item, itemSet ):
         self.assertEquals( len( itemSet ), 1 )
         self.assertTrue( item in itemSet )
