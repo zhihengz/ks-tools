@@ -1,0 +1,6 @@
+<kickstart name="testMultipleCommands">
+  <command>
+    <lang>en_US</lang>
+    <lang>en_US</lang>
+  </command>
+</kickstart>

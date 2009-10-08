@@ -14,7 +14,7 @@ class DuplicationError(Error):
         Arguments:
         - `msg`:
         """
-        self._msg = msg
+        self.msg = msg
         
 
         

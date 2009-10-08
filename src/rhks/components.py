@@ -156,6 +156,5 @@ class Kickstart:
     def addInclude( self, include ):
 
         if include in self.includes:
-            raise DuplicationError( "include " + include.value + 
-                                    " is duplicated" )
+            raise DuplicationError( include.value + " inclusion is duplicated" )
         self.includes.add( include )

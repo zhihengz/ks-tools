@@ -1,5 +1,6 @@
 import getopt,sys,os
 from rhks import parser,components,log
+from rhks.error import *
 
 def print_usage( ):
 	print """usage: ksxml2cfg  [OPTIONS] [FILE]
@@ -57,7 +58,11 @@ def main():
                 sys.exit( 1 )
 
         inFile = args[0]
-	ks = parser.parseKickstartXmlSource( inFile )
+	try:
+		ks = parser.parseKickstartXmlSource( inFile )
+	except DuplicationError as e:
+		log.print_error( e.msg )
+		sys.exit(1)
         ks.srcDir= getAbsDir( inFile )
 
         if outFile == None:
