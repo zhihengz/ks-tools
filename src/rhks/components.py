@@ -97,6 +97,9 @@ class Packages(Directive):
         return ret
 
     def merge(self, pkgs):
+        
+        if pkgs == None:
+            return
         for group in pkgs.groups:
             self.addGroup( group )
         for pkg in pkgs.addpkgs:
@@ -183,3 +186,13 @@ class Kickstart:
             self.addInclude( include )
 
         self.addPackages( ks.packages )
+
+        if self.preAction == None:
+            self.preAction = ks.preAction
+        elif not ks.preAction == None:
+            raise DuplicationError( "pre action is duplicated" )
+        
+        if self.postAction == None:
+            self.postAction = ks.postAction
+        elif not ks.postAction == None:
+            raise DuplicationError( "post action is duplicated" )

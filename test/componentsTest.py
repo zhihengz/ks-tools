@@ -277,7 +277,14 @@ hello world
         pkgs1.merge( pkgs2 )
         self.assertOnlyItemInSet( "base", pkgs1.groups )
         self.assertOnlyItemInSet( "pkgadd", pkgs1.addpkgs )
-        self.assertOnlyItemInSet( "pkgdel", pkgs1.rmpkgs )
+        self.assertOnlyItemInSet( "pkgdel", pkgs1.rmpkgs ) 
+   
+    def testMergeNonePackages( self ):
+        pkgs1 = Packages()
+        pkgs2 = None
+        pkgs1.addGroup( "base" )
+        pkgs1.merge( pkgs2 )
+        self.assertOnlyItemInSet( "base", pkgs1.groups )
 
     def testMergeDuplicatePackageGroup( self ):
         pkgs1 = Packages()
@@ -289,7 +296,7 @@ hello world
         except DuplicationError:
             pass
         else:
-            fail( "expected duplication package group error" )
+            self.fail( "expected duplication package group error" )
 
     def testMergeDuplicateAddPackage( self ):
         pkgs1 = Packages()
@@ -301,7 +308,7 @@ hello world
         except DuplicationError:
             pass
         else:
-            fail( "expected duplication package add error" )
+            self.fail( "expected duplication package add error" )
 
     def testMergeDuplicateDeletePackage( self ):
         pkgs1 = Packages()
@@ -313,12 +320,37 @@ hello world
         except DuplicationError:
             pass
         else:
-            fail( "expected duplication package delete error" )
+            self.fail( "expected duplication package delete error" )
 
+    def testMergeKickstartWithPreAction( self ):
+        ks1 = Kickstart( "test1" )
+        ks2 = Kickstart( "test2" )
+        ks2.preAction = Action( "pre" )
+        ks1.merge( ks2 )
+        self.assertNotEquals( ks1.preAction, None )
+        try :
+            ks1.merge( ks2 )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expected duplication pre action error" )
+
+    def testMergeKickstartWithPostAction( self ):
+        ks1 = Kickstart( "test1" )
+        ks2 = Kickstart( "test2" )
+        ks2.postAction = Action( "post" )
+        ks1.merge( ks2 )
+        self.assertNotEquals( ks1.postAction, None )
+        try :
+            ks1.merge( ks2 )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expected duplication post action error" )
+        
     def assertOnlyItemInSet( self, item, itemSet ):
         self.assertEquals( len( itemSet ), 1 )
         self.assertTrue( item in itemSet )
-                           
-    
+
 if __name__ == '__main__':
     unittest.main()
