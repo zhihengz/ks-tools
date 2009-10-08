@@ -30,4 +30,5 @@ test_file_exists testPackages.cfg
 test_file_exists testFull.cfg
 test_file_exists testMultipleCommands.cfg
 test_file_exists testSingleCommand.cfg
+test_file_exists merged.cfg
 exit 0

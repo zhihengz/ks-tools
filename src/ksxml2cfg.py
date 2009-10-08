@@ -3,14 +3,14 @@ from rhks import parser,components,log
 from rhks.error import *
 
 def print_usage( ):
-	print """usage: ksxml2cfg  [OPTIONS] [FILE]
+	print """usage: ksxml2cfg  [OPTIONS] [FILE] ...
 [OPTIONS] are:
 -h, --help              print this help information
 -v, --version           print version
 -o, --out=[FILE]        output file
 """
 
-def build( kickstart, filename ):
+def output( kickstart, filename ):
     file = open(filename, "w" )
     for command in kickstart.commands:
 	    file.write( command.compile() + "\n" )
@@ -28,6 +28,26 @@ def getAbsDir( fileName ):
         dirname = os.path.dirname( fileName )
         return os.path.abspath( dirname )
 
+def parseOneFile( fileName ):
+  	try:
+		ks = parser.parseKickstartXmlSource( fileName )
+	except DuplicationError , e:
+		log.print_error( e.msg )
+		sys.exit(1)
+        ks.srcDir= getAbsDir( fileName )
+        return ks
+
+def mergeKickstart( ksList, args ):
+        head = ksList[0]
+
+        for i in range( 1, len(ksList) ):
+                try:
+                        head.merge( ksList[i] )
+                except DuplicationError, e:
+                        log.print_error( e.msg + " in " + args[i])
+                        sys.exit( 1 )
+                        
+        return head
 def main():
         version= "1.0.0"
         author="Zhiheng Zhang"
@@ -57,17 +77,17 @@ def main():
                 print_usage( 1 )
                 sys.exit( 1 )
 
-        inFile = args[0]
-	try:
-		ks = parser.parseKickstartXmlSource( inFile )
-	except DuplicationError , e:
-		log.print_error( e.msg )
-		sys.exit(1)
-        ks.srcDir= getAbsDir( inFile )
+        ksList = []
+        for inFile in args:
+                ks = parseOneFile( inFile )
+                ksList.append( ks )
 
+        head =ksList[0]
         if outFile == None:
-                outFile = ks.srcDir + "/" + ks.name + ".cfg"
-	build(ks, outFile )
+                outFile = head.srcDir + "/" + head.name + ".cfg"
+
+        finalKs = mergeKickstart( ksList, args )
+	output( finalKs, outFile )
 
 if __name__ == "__main__":
 	main()

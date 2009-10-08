@@ -2,6 +2,7 @@ PYTHON_LIB=$(shell python -c "from distutils.sysconfig import get_python_lib; pr
 BIN_BASE=/usr/bin
 xml_data_files := $(wildcard data/*.xml)
 data_prefixes := $(patsubst %.xml,%,${xml_data_files})
+xml_merge_data_files := data/testIncludes.xml data/testMultipleCommands.xml
 all:	ksxml2cfg test
 clean:
 	rm -f ksxml2cfg
@@ -17,6 +18,7 @@ test:
 		echo "compiling $$f" ; \
 		python ksxml2cfg.py -o $(addsuffix .cfg, $$f) $(addsuffix .xml, $$f);\
 	done
+	python ksxml2cfg.py -o data/merged.cfg $(xml_merge_data_files)
 	@echo "checking results..." && data/testResult.sh
 ksxml2cfg:	ksxml2cfg.py
 	@echo "creating shell script wrapper" && \
