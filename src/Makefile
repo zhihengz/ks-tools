@@ -3,6 +3,7 @@ BIN_BASE=/usr/bin
 xml_data_files := $(wildcard data/*.xml)
 data_prefixes := $(patsubst %.xml,%,${xml_data_files})
 xml_merge_data_files := data/testIncludes.xml data/testMultipleCommands.xml
+dup_cmds_data_files := data/testSingleCommand.xml data/testMultipleCommands.xml
 all:	ksxml2cfg test
 clean:
 	rm -f ksxml2cfg
@@ -18,7 +19,11 @@ test:
 		echo "compiling $$f" ; \
 		python ksxml2cfg.py -o $(addsuffix .cfg, $$f) $(addsuffix .xml, $$f);\
 	done
+	@echo "compiling $(dup_cmds_data_files)"; \
 	python ksxml2cfg.py -o data/merged.cfg $(xml_merge_data_files)
+	@echo "compiling $(dup_cmds_data_files)"; \
+	python ksxml2cfg.py -o data/dupcmd.cfg $(dup_cmds_data_files) ; \
+	echo "ignore failure anyway"
 	@echo "checking results..." && data/testResult.sh
 ksxml2cfg:	ksxml2cfg.py
 	@echo "creating shell script wrapper" && \
