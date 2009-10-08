@@ -49,4 +49,5 @@ install:
 	install -m 644 rhks/parser.py $(DESTDIR)$(PYTHON_LIB)/rhks/parser.py	
 	install -m 644 rhks/__init__.py $(DESTDIR)$(PYTHON_LIB)/rhks/__init__.py
 	install -m 644 rhks/log.py $(DESTDIR)$(PYTHON_LIB)/rhks/log.py
+	install -m 644 rhks/error.py $(DESTDIR)$(PYTHON_LIB)/rhks/error.py
 

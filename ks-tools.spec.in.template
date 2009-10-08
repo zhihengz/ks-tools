@@ -36,6 +36,9 @@ PYTHONLIB/rhks/components.pyo
 PYTHONLIB/rhks/log.py
 PYTHONLIB/rhks/log.pyc
 PYTHONLIB/rhks/log.pyo
+PYTHONLIB/rhks/error.py
+PYTHONLIB/rhks/error.pyc
+PYTHONLIB/rhks/error.pyo
 PYTHONLIB/rhks/parser.py
 PYTHONLIB/rhks/parser.pyc
 PYTHONLIB/rhks/parser.pyo

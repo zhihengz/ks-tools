@@ -74,7 +74,7 @@ def main():
                         outFile = a
         if len( args ) < 1:
                 log.print_error( "no input file" )
-                print_usage( 1 )
+                print_usage( )
                 sys.exit( 1 )
 
         ksList = []
