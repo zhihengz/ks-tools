@@ -60,7 +60,7 @@ def main():
         inFile = args[0]
 	try:
 		ks = parser.parseKickstartXmlSource( inFile )
-	except DuplicationError as e:
+	except DuplicationError , e:
 		log.print_error( e.msg )
 		sys.exit(1)
         ks.srcDir= getAbsDir( inFile )
