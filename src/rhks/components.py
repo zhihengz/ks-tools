@@ -146,5 +146,8 @@ class Kickstart:
     def addCommand( self, command ):
         self.commands.add( command )
 
-    def setPackages( self, packages):
+    def addPackages( self, packages):
         self.packages = packages
+
+    def addInclude( self, include ):
+        self.includes.add( include )

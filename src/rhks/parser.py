@@ -28,14 +28,14 @@ def parseKickstart( node ):
         for cmdNode in node.getElementsByTagName( "command" ):
             parseCommands( ks, cmdNode )
         for pkgsNode in node.getElementsByTagName( "packages" ):
-            ks.setPackages( parsePackages( pkgsNode ) )
+            ks.addPackages( parsePackages( pkgsNode ) )
         for actionNode in node.getElementsByTagName( "pre" ):
             ks.preAction = parseAction( actionNode )
         for actionNode in node.getElementsByTagName( "post" ):
             ks.postAction = parseAction( actionNode )
         incNodes = [ e for e in node.childNodes if e.nodeType == e.ELEMENT_NODE and e.localName == "include" ]
         for incNode in incNodes:
-            ks.includes.add ( parseIncludeMacro( incNode ) )
+            ks.addInclude ( parseIncludeMacro( incNode ) )
         return ks
     else:
         return None
