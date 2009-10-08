@@ -1,4 +1,5 @@
 from rhks.components import *
+from rhks.error import *
 import unittest
 import os
 
@@ -8,6 +9,11 @@ def createTmpFile( data ):
     file.write(data)
     file.close()
     
+def createIncludeMacro( value ):
+    inc = IncludeMacro( )
+    inc.value = value
+    return inc
+
 class componentsTest(unittest.TestCase):
 
     def tearDown( self ):
@@ -153,11 +159,9 @@ hello world
         self.assertEquals( action.compile(), expected )
    
     def testCompareIncludeMacro( self ):
-        inc1 = IncludeMacro()
-        inc1.value = "test"
+        inc1 = createIncludeMacro( "test" )
         self.assertFalse( inc1 == None )
-        inc2 = IncludeMacro()
-        inc2.value = "test"
+        inc2 = createIncludeMacro( "test" )
         self.assertTrue( inc1 == inc2 )
         self.assertEquals( inc2, inc1 )
         inc2.value ="other"
@@ -177,8 +181,30 @@ hello world
         self.assertTrue( cmd1 == cmd3 )
         self.assertEquals( cmd1, cmd3 )
         
+    def testDuplicatedKickstartIncludes( self ):
+        ks = Kickstart( "test" )
+        ks.addInclude( createIncludeMacro( "test" ) )
+        try:
+            ks.addInclude( createIncludeMacro( "test" ) )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expected duplication error" )  
+
+    def testDuplicatedCommands( self ):
+        ks = Kickstart( "test" )
+        ks.addCommand( Command( "test" ) )
+        try:
+            ks.addCommand( Command( "test" ) )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expected duplication error" )
+
     def assertOnlyItemInSet( self, item, itemSet ):
         self.assertEquals( len( itemSet ), 1 )
         self.assertTrue( item in itemSet )
+                           
+    
 if __name__ == '__main__':
     unittest.main()

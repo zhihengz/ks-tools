@@ -1,3 +1,4 @@
+from error import *
 
 def escapeValue( value ):
     ret = value
@@ -144,10 +145,17 @@ class Kickstart:
         self.srcDir=None
 
     def addCommand( self, command ):
+        if command in self.commands:
+            raise DuplicationError( "command " + command.name + 
+                                    " is duplicated" )
         self.commands.add( command )
 
     def addPackages( self, packages):
         self.packages = packages
 
     def addInclude( self, include ):
+
+        if include in self.includes:
+            raise DuplicationError( "include " + include.value + 
+                                    " is duplicated" )
         self.includes.add( include )
