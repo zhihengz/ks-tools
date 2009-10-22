@@ -1,5 +1,17 @@
 from error import *
 
+
+def createEmptySet():
+    """
+    comptabile with python 2.3
+    """
+    try:
+        emptyset = set([])
+    except NameError:
+        import sets
+        emptyset = sets.Set([])
+    return emptyset
+
 def escapeValue( value ):
     ret = value
     if value.find( " " ) > 0 :
@@ -71,9 +83,9 @@ def compileDeletePackage( pName ):
 class Packages(Directive):
     def __init__(self):
         Directive.__init__(self,"packages")
-        self.groups=set([])
-        self.rmpkgs=set([])
-        self.addpkgs=set([])
+        self.groups=createEmptySet()
+        self.rmpkgs=createEmptySet()
+        self.addpkgs=createEmptySet()
 
     def addGroup(self,groupName):
         addItemWithoutDuplicate( groupName, self.groups, "group " + groupName )
@@ -110,7 +122,7 @@ class Packages(Directive):
 class Action(Directive):
     def __init__( self, name ):
         Directive.__init__( self, name )
-        self.includes=set([])
+        self.includes=createEmptySet()
         
     def include( self, filePath ):
         self.includes.add( filePath )
@@ -155,11 +167,11 @@ class IncludeMacro(Directive):
 class Kickstart:
     def __init__(self, name ):
         self.name = name
-        self.commands = set([])
+        self.commands = createEmptySet()
         self.packages = None
         self.preAction = None
         self.postAction = None
-        self.includes= set([])
+        self.includes= createEmptySet()
         self.srcDir=None
 
     def addCommand( self, command ):
