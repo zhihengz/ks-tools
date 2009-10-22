@@ -175,8 +175,8 @@ class parserTest(unittest.TestCase):
     def assertPackages( self, packages ):
         self.assertEquals( packages.options[ "resolvedeps" ], "yes" )
         self.assertTrue( "base" in packages.groups )
-        self.assertTrue( "gcc", packages.addpkgs )
-        self.assertTrue( "ftp", packages.rmpkgs )
+        self.assertTrue( "gcc" in packages.addpkgs )
+        self.assertTrue( "ftp" in packages.rmpkgs )
 
     def assertAction( self, action, name ):
         self.assertEquals( action.name, name )
