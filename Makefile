@@ -1,6 +1,5 @@
 TARGET=rpm
 DIST=fc11
-PYTHON_LIB=$(shell python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
 all:	unittest
 unittest:	
 	cd test && $(MAKE) test
@@ -16,5 +15,4 @@ rpm:	ks-tools.spec.in
 
 ks-tools.spec.in:	ks-tools.spec.in.template
 	cat ks-tools.spec.in.template | \
-	sed -e "s#PYTHONLIB#$(PYTHON_LIB)#g" \
-	    -e "s#DIST#.$(DIST)#g" > ks-tools.spec.in
+	sed -e "s#DIST#.$(DIST)#g" > ks-tools.spec.in
