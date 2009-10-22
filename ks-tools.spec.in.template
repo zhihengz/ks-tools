@@ -1,3 +1,4 @@
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 Summary: ks-tools
 Name: %{pkgname}
 Version: %{ver}
@@ -27,21 +28,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 /usr/bin/ksxml2cfg
-PYTHONLIB/rhks/__init__.py
-PYTHONLIB/rhks/__init__.pyc
-PYTHONLIB/rhks/__init__.pyo
-PYTHONLIB/rhks/components.py
-PYTHONLIB/rhks/components.pyc
-PYTHONLIB/rhks/components.pyo
-PYTHONLIB/rhks/log.py
-PYTHONLIB/rhks/log.pyc
-PYTHONLIB/rhks/log.pyo
-PYTHONLIB/rhks/error.py
-PYTHONLIB/rhks/error.pyc
-PYTHONLIB/rhks/error.pyo
-PYTHONLIB/rhks/parser.py
-PYTHONLIB/rhks/parser.pyc
-PYTHONLIB/rhks/parser.pyo
+%{python_sitelib}/rhks/
 
 %doc
 
