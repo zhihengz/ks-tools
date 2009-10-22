@@ -6,6 +6,27 @@ import os
 
 class parserTest(unittest.TestCase):
 
+
+    def assertTrue( self, value ):
+        """
+        back porting assertTrue for python 2.3
+        """
+        s = super( parserTest, self)
+        if hasattr( s, 'assertTrue'):
+            s.assertTrue( value )
+        else:
+            assertNotEquals( False, value )
+
+    def assertFalse( self, value ):
+        """
+        back porting assertFalse for python 2.3
+        """
+        s = super( parserTest, self)
+        if hasattr( s, 'assertFalse'):
+            s.assertFalse( value )
+        else:
+            assertEquals( False, value )
+
     def setUp( self ):
         self.ksXmlWithCommand =  """
 <kickstart name="test">
