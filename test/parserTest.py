@@ -15,7 +15,7 @@ class parserTest(unittest.TestCase):
         if hasattr( s, 'assertTrue'):
             s.assertTrue( value )
         else:
-            assertNotEquals( False, value )
+            self.assertNotEquals( False, value )
 
     def assertFalse( self, value ):
         """
