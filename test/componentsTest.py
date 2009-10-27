@@ -368,15 +368,11 @@ hello world
     def testMergeKickstartWithPostAction( self ):
         ks1 = Kickstart( "test1" )
         ks2 = Kickstart( "test2" )
-        ks2.postAction = Action( "post" )
+        ks2.addPostAction( Action( "post" ) )
         ks1.merge( ks2 )
-        self.assertNotEquals( ks1.postAction, None )
-        try :
-            ks1.merge( ks2 )
-        except DuplicationError:
-            pass
-        else:
-            self.fail( "expected duplication post action error" )
+        self.assertEquals( len( ks1.postActions ) , 1 )
+        ks1.merge( ks2 )
+        self.assertEquals( len( ks1.postActions ), 2 )
         
     def assertOnlyItemInSet( self, item, itemSet ):
         self.assertEquals( len( itemSet ), 1 )

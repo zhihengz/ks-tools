@@ -160,7 +160,7 @@ class Kickstart:
         self.commands = []
         self.packages = None
         self.preAction = None
-        self.postAction = None
+        self.postActions = []
         self.includes= []
         self.srcDir=None
 
@@ -179,6 +179,9 @@ class Kickstart:
         appendItemWoDuplicate( include, self.includes, 
                                  include.value + " inclusion" )
 
+    def addPostAction( self, postAction ):
+        self.postActions.append( postAction )
+
     def merge( self, ks ):
         
         for command in ks.commands:
@@ -194,7 +197,4 @@ class Kickstart:
         elif not ks.preAction == None:
             raise DuplicationError( "pre action is duplicated" )
         
-        if self.postAction == None:
-            self.postAction = ks.postAction
-        elif not ks.postAction == None:
-            raise DuplicationError( "post action is duplicated" )
+        self.postActions.extend( ks.postActions )

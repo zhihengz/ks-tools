@@ -34,4 +34,5 @@ test_file_exists testFull.cfg
 test_file_exists testMultipleCommands.cfg
 test_file_exists testSingleCommand.cfg
 test_file_exists merged.cfg
+test_file_exists mpostacts.cfg
 exit 0

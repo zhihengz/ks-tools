@@ -32,7 +32,8 @@ def parseKickstart( node ):
         for actionNode in node.getElementsByTagName( "pre" ):
             ks.preAction = parseAction( actionNode )
         for actionNode in node.getElementsByTagName( "post" ):
-            ks.postAction = parseAction( actionNode )
+            ks.addPostAction( parseAction( actionNode ) )
+
         incNodes = [ e for e in node.childNodes if e.nodeType == e.ELEMENT_NODE and e.localName == "include" ]
         for incNode in incNodes:
             ks.addInclude ( parseIncludeMacro( incNode ) )

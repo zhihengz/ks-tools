@@ -147,7 +147,7 @@ class parserTest(unittest.TestCase):
         node = self.createNode( self.ksXmlWithActions )
         ks = parseKickstart( node )
         self.assertAction( ks.preAction, "pre" )
-        self.assertAction( ks.postAction, "post" )
+        self.assertAction( ks.postActions[0], "post" )
 
     def testParseKickstartWithIncludes( self ):
         node = self.createNode( self.ksXmlWithIncludes )
@@ -176,7 +176,7 @@ class parserTest(unittest.TestCase):
         self.assertPackages( ks.packages )
         ks = self.parseKickstartFromXmlSource( self.ksXmlWithActions )
         self.assertAction( ks.preAction, "pre" )
-        self.assertAction( ks.postAction, "post" )
+        self.assertAction( ks.postActions[0], "post" )
         ks = self.parseKickstartFromXmlSource( self.ksXmlWithIncludes )
         self.assertIncludes( ks.includes )
     def parseKickstartFromXmlSource( self, xmldata ):

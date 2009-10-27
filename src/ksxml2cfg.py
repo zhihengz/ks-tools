@@ -20,8 +20,8 @@ def output( kickstart, filename ):
             file.writelines( kickstart.packages.compile() )
     if not kickstart.preAction == None :
             file.writelines( kickstart.preAction.compile( kickstart.srcDir ) )
-    if not kickstart.postAction == None :
-            file.writelines( kickstart.postAction.compile( kickstart.srcDir ) )
+    for postAction in kickstart.postActions:
+            file.writelines( postAction.compile( kickstart.srcDir ) )
     file.close
 
 def getAbsDir( fileName ):

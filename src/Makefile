@@ -8,7 +8,8 @@ xml_merge_data_files := data/testIncludes.xml \
 	data/testActions.xml
 dup_cmds_data_files := data/testSingleCommand.xml data/testMultipleCommands.xml
 dup_pkgs_data_files := data/testPackages.xml data/testPackages.xml
-dup_acts_data_files := data/testActions.xml data/testActions.xml
+dup_acts_data_files := data/testActions.xml data/testDuplicatePreAction.xml 
+multiple_postacts_data_files := data/testActions.xml data/testMultiplePostAction.xml 
 all:	ksxml2cfg test
 clean:
 	rm -f ksxml2cfg
@@ -35,6 +36,8 @@ test:
 	@echo "compiling $(dup_acts_data_files)"; \
 	python ksxml2cfg.py -o data/dupacts.cfg $(dup_acts_data_files) ; \
 	echo "ignore failure anyway"
+	@echo "compiling $(multiple_postacts_data_files)"; \
+	python ksxml2cfg.py -o data/mpostacts.cfg $(multiple_postacts_data_files) ;
 	@echo "checking results..." && data/testResult.sh
 ksxml2cfg:	ksxml2cfg.py
 	@echo "creating shell script wrapper" && \
