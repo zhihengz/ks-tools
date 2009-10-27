@@ -34,7 +34,7 @@ class componentsTest(unittest.TestCase):
         if hasattr( s, 'assertFalse'):
             s.assertFalse( value )
         else:
-            assertEquals( False, value )
+            self.assertEquals( False, value )
 
     def tearDown( self ):
         if os.path.exists( tmpFile ):

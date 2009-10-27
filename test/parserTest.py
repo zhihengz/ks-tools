@@ -25,7 +25,7 @@ class parserTest(unittest.TestCase):
         if hasattr( s, 'assertFalse'):
             s.assertFalse( value )
         else:
-            assertEquals( False, value )
+            self.assertEquals( False, value )
 
     def setUp( self ):
         self.ksXmlWithCommand =  """
