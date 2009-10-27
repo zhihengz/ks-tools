@@ -221,6 +221,16 @@ hello world
         else:
             self.fail( "expected duplication error" )
 
+    def testDuplicatedIncludesInAction( self ):
+        preAction = Action( "pre" )
+        preAction.include ( "file_a" )
+        try:
+            preAction.include( "file_a" )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expected duplication error" )
+
     def testDuplicatedPackages( self ):
         pkgs = Packages()
         pkgs.addGroup( "group1" )

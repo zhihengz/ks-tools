@@ -1,27 +1,16 @@
 from error import *
 
 
-def createEmptySet():
-    """
-    comptabile with python 2.3
-    """
-    try:
-        emptyset = set([])
-    except NameError:
-        import sets
-        emptyset = sets.Set([])
-    return emptyset
-
 def escapeValue( value ):
     ret = value
     if value.find( " " ) > 0 :
         ret = "\"" + value + "\""
     return ret
 
-def addItemWithoutDuplicate( item, itemSet, what ):
-    if item in itemSet:
+def appendItemWoDuplicate( item, itemList, what ):
+    if item in itemList:
         raise DuplicationError( what + " is duplicated" )
-    itemSet.add( item )
+    itemList.append( item )
 
 class Directive:
     def __init__(self, name):
@@ -83,19 +72,19 @@ def compileDeletePackage( pName ):
 class Packages(Directive):
     def __init__(self):
         Directive.__init__(self,"packages")
-        self.groups=createEmptySet()
-        self.rmpkgs=createEmptySet()
-        self.addpkgs=createEmptySet()
+        self.groups= []
+        self.rmpkgs=[]
+        self.addpkgs=[]
 
     def addGroup(self,groupName):
-        addItemWithoutDuplicate( groupName, self.groups, "group " + groupName )
+        appendItemWoDuplicate( groupName, self.groups, "group " + groupName )
 
     def addPkg(self,pkgName):
-        addItemWithoutDuplicate( pkgName, self.addpkgs, 
+        appendItemWoDuplicate( pkgName, self.addpkgs, 
                                  "adding package " + pkgName )
 
     def deletePkg(self, pkgName ):
-        addItemWithoutDuplicate( pkgName, self.rmpkgs, 
+        appendItemWoDuplicate( pkgName, self.rmpkgs, 
                                  "deleting package " + pkgName )
 
     def compile(self):
@@ -122,10 +111,11 @@ class Packages(Directive):
 class Action(Directive):
     def __init__( self, name ):
         Directive.__init__( self, name )
-        self.includes=createEmptySet()
+        self.includes=[]
         
     def include( self, filePath ):
-        self.includes.add( filePath )
+        appendItemWoDuplicate( filePath, self.includes, 
+                               "including source " + filePath )
 
     def compile( self, includeBaseDir=None ):
         ret= "%" + self.name + self.compileOptions() + "\n"
@@ -167,15 +157,15 @@ class IncludeMacro(Directive):
 class Kickstart:
     def __init__(self, name ):
         self.name = name
-        self.commands = createEmptySet()
+        self.commands = []
         self.packages = None
         self.preAction = None
         self.postAction = None
-        self.includes= createEmptySet()
+        self.includes= []
         self.srcDir=None
 
     def addCommand( self, command ):
-        addItemWithoutDuplicate( command, 
+        appendItemWoDuplicate( command, 
                                  self.commands, 
                                  "command " + command.name )
     def addPackages( self, packages):
@@ -186,7 +176,7 @@ class Kickstart:
 
     def addInclude( self, include ):
 
-        addItemWithoutDuplicate( include, self.includes, 
+        appendItemWoDuplicate( include, self.includes, 
                                  include.value + " inclusion" )
 
     def merge( self, ks ):
