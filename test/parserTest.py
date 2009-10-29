@@ -41,6 +41,7 @@ class parserTest(unittest.TestCase):
 <group>base</group>
 <addpackage>gcc</addpackage>
 <rmpackage>ftp</rmpackage>
+<include>/tmp/test.part</include>
 </packages>
 </kickstart>
 """
@@ -98,6 +99,7 @@ class parserTest(unittest.TestCase):
 <group>base</group>
 <addpackage>gcc</addpackage>
 <rmpackage>ftp</rmpackage>
+<include>/tmp/test.part</include>
 </packages>
 """
         node = self.createNode( xmldata )
@@ -198,6 +200,9 @@ class parserTest(unittest.TestCase):
         self.assertTrue( "base" in packages.groups )
         self.assertTrue( "gcc" in packages.addpkgs )
         self.assertTrue( "ftp" in packages.rmpkgs )
+        include = IncludeMacro( )
+        include.value="/tmp/test.part"
+        self.assertTrue( include in packages.includes )
 
     def assertAction( self, action, name ):
         self.assertEquals( action.name, name )

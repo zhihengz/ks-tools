@@ -75,8 +75,7 @@ class componentsTest(unittest.TestCase):
         self.assertEquals( command.compile(), "hello --name \"hello world\"" )
 
     def testCompileIncludeMacro( self ):
-        inc = IncludeMacro( )
-        inc.value="/tmp/network.ks"
+        inc = createIncludeMacro( "/tmp/network.ks" )
         self.assertEquals( inc.compile(), "%include /tmp/network.ks\n" )
 
     def testAddPkgGroup(self):
@@ -93,6 +92,12 @@ class componentsTest(unittest.TestCase):
         packages = Packages()
         packages.deletePkg( "pkg_a" )
         self.assertOnlyItemInSet( "pkg_a", packages.rmpkgs )
+
+    def testIncludeInPkg(self):
+        packages = Packages()
+        packages.addInclude( createIncludeMacro( "/tmp/test.part" ) )
+        self.assertOnlyItemInSet( createIncludeMacro( "/tmp/test.part" ),
+                                  packages.includes )
 
     def testCompilePackageGroup(self):
         self.assertEquals( compilePackageGroup( "base" ), "@ base" )
@@ -236,6 +241,7 @@ hello world
         pkgs.addGroup( "group1" )
         pkgs.addPkg( "pkg1" )
         pkgs.deletePkg( "pkg2" )
+        pkgs.addInclude( createIncludeMacro( "/tmp/test.part" ) )
         
         try:
             pkgs.addGroup( "group1" )
@@ -251,6 +257,12 @@ hello world
             self.fail( "expected duplication error" )
         try:
             pkgs.deletePkg( "pkg2" )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expected duplication error" )
+        try:
+            pkgs.addInclude( createIncludeMacro( "/tmp/test.part") )
         except DuplicationError:
             pass
         else:

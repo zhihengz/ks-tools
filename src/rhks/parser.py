@@ -65,6 +65,10 @@ def parsePackages( node ):
         packages.addPkg( getNodeText( pkgNode ) )
     for pkgNode in node.getElementsByTagName( "rmpackage" ):
         packages.deletePkg( getNodeText( pkgNode ) )
+    for incNode in node.getElementsByTagName( "include" ):
+        include = IncludeMacro()
+        include.value = getNodeText( incNode )
+        packages.addInclude( include )
     return packages
 
 def parseCommand( node ):

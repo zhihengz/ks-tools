@@ -75,6 +75,7 @@ class Packages(Directive):
         self.groups= []
         self.rmpkgs=[]
         self.addpkgs=[]
+        self.includes=[]
 
     def addGroup(self,groupName):
         appendItemWoDuplicate( groupName, self.groups, "group " + groupName )
@@ -87,6 +88,10 @@ class Packages(Directive):
         appendItemWoDuplicate( pkgName, self.rmpkgs, 
                                  "deleting package " + pkgName )
 
+    def addInclude( self, include ):
+        appendItemWoDuplicate( include, self.includes,
+                               "inclusion " + include.value )
+
     def compile(self):
         ret = "%" + self.name + self.compileOptions() + "\n"
         for gName in self.groups:
@@ -95,6 +100,9 @@ class Packages(Directive):
             ret += compileAddPackage( pName ) + "\n"
         for pName in self.rmpkgs:
             ret += compileDeletePackage( pName ) + "\n"
+        for include in self.includes:
+            ret += include.compile()
+
         return ret
 
     def merge(self, pkgs):

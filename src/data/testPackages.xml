@@ -11,5 +11,6 @@
     <group>graphical-internet</group>
     <addpackage>gcc</addpackage>
     <rmpackage>ftp</rmpackage>
+    <include>/tmp/test.part</include>
   </packages>
 </kickstart>
