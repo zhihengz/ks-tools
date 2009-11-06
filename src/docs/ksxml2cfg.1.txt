@@ -1,0 +1,35 @@
+ksxml2cfg(1)
+============
+
+NAME
+----
+ksxml2cfg - tool to compile kickstart xml fragement files into cfg format
+
+SYNOPSIS
+--------
+*ksxml2cfg* ['options'] 'FILE' ...
+
+DESCRIPTION
+-----------
+ksxml2cfg is a tool to compile multiple kickstart xml fragement files into
+cfg format. It was developed to better outline the kickstart cfg structures
+and create mutiple kickstart with a set of similar inputs.
+
+OPTIONS
+-------
+*-v, --version*::
+    Print version information
+
+*-h, --help*::
+    print this help information
+
+*-o, --out='file'*::
+
+AUTHOR
+------
+Written by Zhiheng Zhang mailto:zhihengz_at_gmail_dot_com
+
+COPYING
+-------
+Copyright \(C) 2009 Jason Zhang. Free use of this software is
+granted under the terms of the GNU General Public License(GPL)

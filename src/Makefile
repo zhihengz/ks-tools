@@ -17,6 +17,7 @@ clean:
 	rm -fr *.pyc
 	cd rhks && $(MAKE) clean
 	cd data && rm -fr *~ && rm -fr *.cfg
+	cd docs && $(MAKE) clean
 test:
 	@echo $(PYTHON_LIB)
 	@echo "testing ksxml2cfg.py"
@@ -53,4 +54,4 @@ install:
 	install -m 644 rhks/__init__.py $(DESTDIR)$(PYTHON_LIB)/rhks/__init__.py
 	install -m 644 rhks/log.py $(DESTDIR)$(PYTHON_LIB)/rhks/log.py
 	install -m 644 rhks/error.py $(DESTDIR)$(PYTHON_LIB)/rhks/error.py
-
+	cd docs && $(MAKE) install DESTDIR=$(DESTDIR)
