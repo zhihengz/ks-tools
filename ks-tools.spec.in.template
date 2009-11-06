@@ -31,6 +31,7 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/rhks/
 
 %doc
+/usr/share/man/man1/ksxml2cfg.1.gz
 
 
 %changelog
