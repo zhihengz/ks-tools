@@ -26,6 +26,9 @@ def getAllPackages( node ):
 
     return pkgset
 
+def parseCompsXmlNode( filename ):
+    doc = xml.dom.minidom.parse( filename )
+    return doc.documentElement
+
 def parsePackageReq( node ):
     return getNodeText( node )
-        

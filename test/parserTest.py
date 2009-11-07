@@ -199,15 +199,5 @@ class parserTest( TestBase ):
         inc.value = "/tmp/network.ks"
         self.assertOnlyItemInSet( inc, includeSet )
 
-class compsTest(TestBase ):
-    def testParsePackages( self ):
-        xmldata = """<comps>
-<packagereq>foo</packagereq>
-</comps>
-"""
-        node = createNode( xmldata )
-        pkgset = getAllPackages( node )
-        self.assertOnlyItemInSet( "foo", pkgset )
-
 if __name__ == '__main__':
     unittest.main()

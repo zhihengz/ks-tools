@@ -1,6 +1,6 @@
 PYTHON_LIB=$(shell python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
 BIN_BASE=/usr/bin
-xml_data_files := $(wildcard data/*.xml)
+xml_data_files := $(wildcard data/test*.xml)
 data_prefixes := $(patsubst %.xml,%,${xml_data_files})
 xml_merge_data_files := data/testIncludes.xml \
 	data/testMultipleCommands.xml \
@@ -16,7 +16,7 @@ clean:
 	rm -fr *~ tmp
 	rm -fr *.pyc
 	cd rhks && $(MAKE) clean
-	cd data && rm -fr *~ && rm -fr *.cfg
+	cd data && rm -fr *~ && rm -fr *.cfg *.txt
 	cd docs && $(MAKE) clean
 test:
 	@echo $(PYTHON_LIB)
@@ -39,6 +39,7 @@ test:
 	echo "ignore failure anyway"
 	@echo "compiling $(multiple_postacts_data_files)"; \
 	python ksxml2cfg.py -o data/mpostacts.cfg $(multiple_postacts_data_files) ;
+	python kscomps.py -q data/compsRhcs.xml > data/compsRhcs.txt
 	@echo "checking results..." && data/testResult.sh
 ksxml2cfg:	ksxml2cfg.py
 	@echo "creating shell script wrapper" && \

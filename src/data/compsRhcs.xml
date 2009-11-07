@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE comps PUBLIC "-//Red Hat, Inc.//DTD Comps info//EN" "comps.dtd">
+<comps>
+  <group>
+    <id>rhcs</id>
+    <name>Red Hat Cluster Suite</name>
+    <description>Red Hat Cluster Suite Packages</description>
+    <default>false</default>
+    <uservisible>true</uservisible>
+    <biarchonly>false</biarchonly>
+    <packagelist>
+      <packagereq type='default'>ccs</packagereq>
+      <packagereq type='optional'>ccs-devel</packagereq>
+      <packagereq type='default'>cluster-cim</packagereq>
+      <packagereq type='default'>cluster-snmp</packagereq>
+      <packagereq type='default'>cman</packagereq>
+      <packagereq type='optional'>cman-devel</packagereq>
+      <packagereq type='default'>cman-kernel</packagereq>
+      <packagereq type='default'>cman-kernel-hugemem</packagereq>
+      <packagereq type='default'>cman-kernel-largesmp</packagereq>
+      <packagereq type='default'>cman-kernel-smp</packagereq>
+      <packagereq type='default'>cman-kernel-xenU</packagereq>
+      <packagereq type='default'>cman-kernheaders</packagereq>
+      <packagereq type='default'>conga</packagereq>
+      <packagereq type='default'>dlm</packagereq>
+      <packagereq type='optional'>dlm-devel</packagereq>
+      <packagereq type='default'>dlm-kernel</packagereq>
+      <packagereq type='default'>dlm-kernel-hugemem</packagereq>
+      <packagereq type='default'>dlm-kernel-largesmp</packagereq>
+      <packagereq type='default'>dlm-kernel-smp</packagereq>
+      <packagereq type='default'>dlm-kernel-xenU</packagereq>
+      <packagereq type='default'>dlm-kernheaders</packagereq>
+      <packagereq type='default'>fence</packagereq>
+      <packagereq type='default'>gulm</packagereq>
+      <packagereq type='optional'>gulm-devel</packagereq>
+      <packagereq type='default'>iddev</packagereq>
+      <packagereq type='optional'>iddev-devel</packagereq>
+      <packagereq type='default'>ipvsadm</packagereq>
+      <packagereq type='default'>luci</packagereq>
+      <packagereq type='default'>magma</packagereq>
+      <packagereq type='optional'>magma-devel</packagereq>
+      <packagereq type='default'>magma-plugins</packagereq>
+      <packagereq type='default'>modcluster</packagereq>
+      <packagereq type='default'>perl-Net-Telnet</packagereq>
+      <packagereq type='default'>piranha</packagereq>
+      <packagereq type='default'>rgmanager</packagereq>
+      <packagereq type='default'>ricci</packagereq>
+      <packagereq type='default'>system-config-cluster</packagereq>
+    </packagelist>
+  </group>
+</comps>
