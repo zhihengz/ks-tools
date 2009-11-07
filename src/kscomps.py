@@ -18,14 +18,28 @@ def queryAllPackages( compsFile ):
 def verifyAllPackages( compsFile, rpmdir ):
     compsset = comps.getAllPackages( comps.parseCompsXmlNode( compsFile ) )
     foundset = comps.getAllRpmTagNamesInDir( rpmdir )
+    missedInRpms = comps.findMissedPackages( foundset, compsset )
+    noError = False
+    noWarning = False
+
+    if len( missedInRpms ) > 0:
+        for pkg in missedInRpms:
+            log.print_error( "no " + pkg + " rpm found in " + rpmdir )
+    else:
+        noError = not False
+        print "Nothing missed in comps"
+    
     missedInComps = comps.findMissedPackages( compsset, foundset )
     if len( missedInComps ) > 0:
         for pkg in missedInComps:
-            log.print_error( "missing " + pkg )
-        sys.exit(1)
+            log.print_warn( "no " + pkg + " rpm found in compsFile" )
     else:
+        noWarning = not False
         print "Nothing missed in comps"
-        
+
+    if not noError:
+        sys.exit( 1 )
+
 
 def main():
     version= "1.0.0"
