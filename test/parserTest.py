@@ -3,29 +3,14 @@ from rhks.parser import *
 import unittest
 import xml.dom.minidom
 import os
+from rhksTestBase import *
+from rhks.comps import *
 
-class parserTest(unittest.TestCase):
+def createNode( xmlText ):
+    doc = xml.dom.minidom.parseString( xmlText )
+    return doc.documentElement
 
-
-    def assertTrue( self, value ):
-        """
-        back porting assertTrue for python 2.3
-        """
-        s = super( parserTest, self)
-        if hasattr( s, 'assertTrue'):
-            s.assertTrue( value )
-        else:
-            self.assertNotEquals( False, value )
-
-    def assertFalse( self, value ):
-        """
-        back porting assertFalse for python 2.3
-        """
-        s = super( parserTest, self)
-        if hasattr( s, 'assertFalse'):
-            s.assertFalse( value )
-        else:
-            self.assertEquals( False, value )
+class parserTest( TestBase ):
 
     def setUp( self ):
         self.ksXmlWithCommand =  """
@@ -60,37 +45,33 @@ class parserTest(unittest.TestCase):
 <include>/tmp/network.ks</include>
 </kickstart>
 """
-    def createNode( self, xmlText ):
-        doc = xml.dom.minidom.parseString( xmlText )
-        return doc.documentElement
-
     def testParseCommandWithValue( self ):
-        node = self.createNode( "<lang>us</lang>")
+        node = createNode( "<lang>us</lang>")
         command = parseCommand( node )
         self.assertEquals( command.name, "lang" )
         self.assertEquals( command.value, "us" )
 
     def testParseCommand( self ):
-        node = self.createNode( "<cdrom/>")
+        node = createNode( "<cdrom/>")
         command = parseCommand( node )
         self.assertEquals( command.name, "cdrom" )
         self.assertEquals( command.value, None )
 
     def testParseCommandWithOption( self ):
-        node = self.createNode( "<hello test='yes'>world</hello>")
+        node = createNode( "<hello test='yes'>world</hello>")
         command = parseCommand( node )
         self.assertEquals( command.name, "hello" )
         self.assertEquals( command.value, "world" )
         self.assertEquals( command.options["test"], "yes" )
 
     def testParseCommands( self ):
-        node = self.createNode( "<command><lang/></command>")
+        node = createNode( "<command><lang/></command>")
         ks = Kickstart( "test" )
         parseCommands( ks, node )
         self.assertOnlyItemInSet( Command( "lang" ), ks.commands )
 
     def testParseIncludes( self ):
-        node = self.createNode( "<include>/tmp/network.ks</include>" )
+        node = createNode( "<include>/tmp/network.ks</include>" )
         inc = parseIncludeMacro( node )
         self.assertInclude( inc )
 
@@ -102,7 +83,7 @@ class parserTest(unittest.TestCase):
 <include>/tmp/test.part</include>
 </packages>
 """
-        node = self.createNode( xmldata )
+        node = createNode( xmldata )
         packages = parsePackages( node )
         self.assertPackages( packages )
 
@@ -110,7 +91,7 @@ class parserTest(unittest.TestCase):
         xmldata = """<pre interpreter="/usr/bin/python">
 </pre>
 """
-        node = self.createNode( xmldata )
+        node = createNode( xmldata )
         action = parseAction( node )
         self.assertEquals( action.name, "pre" )
         self.assertEquals( action.options[ "interpreter" ],
@@ -121,38 +102,38 @@ class parserTest(unittest.TestCase):
 <include src="test.tmp"/>
 </pre>
 """
-        node = self.createNode( xmldata )
+        node = createNode( xmldata )
         action = parseAction( node )
         self.assertAction( action, "pre" )
 
     def testParseKickstart( self ):
-        node = self.createNode( "<kickstart name='test'></kickstart>" )
+        node = createNode( "<kickstart name='test'></kickstart>" )
         ks = parseKickstart( node )
         self.assertEquals( ks.name, "test" )
 
     def testParseNonameKickstart( self ):
-        node = self.createNode( "<kickstart></kickstart>" )
+        node = createNode( "<kickstart></kickstart>" )
         ks = parseKickstart( node )
         self.assertNotEquals( ks, None )
 
     def testParseKickstartWithCommands( self ):
-        node = self.createNode( self.ksXmlWithCommand )
+        node = createNode( self.ksXmlWithCommand )
         ks = parseKickstart( node )
         self.assertCommandInKickstartParse( ks )
 
     def testParseKickstartWithPackages( self ):
-        node = self.createNode( self.ksXmlWithPackages )
+        node = createNode( self.ksXmlWithPackages )
         ks = parseKickstart( node )
         self.assertPackages( ks.packages )
 
     def testParseKickstartWithActions( self ):
-        node = self.createNode( self.ksXmlWithActions )
+        node = createNode( self.ksXmlWithActions )
         ks = parseKickstart( node )
         self.assertAction( ks.preAction, "pre" )
         self.assertAction( ks.postActions[0], "post" )
 
     def testParseKickstartWithIncludes( self ):
-        node = self.createNode( self.ksXmlWithIncludes )
+        node = createNode( self.ksXmlWithIncludes )
         ks= parseKickstart( node )
         self.assertEquals( len( ks.includes ), 1 )
         self.assertIncludes( ks.includes )
@@ -166,7 +147,7 @@ class parserTest(unittest.TestCase):
 </pre>
 </kickstart>
 """
-        node = self.createNode( xmldata )
+        node = createNode( xmldata )
         ks= parseKickstart( node )
         self.assertEquals( len( ks.includes ), 1 )
         self.assertIncludes( ks.includes )
@@ -218,9 +199,15 @@ class parserTest(unittest.TestCase):
         inc.value = "/tmp/network.ks"
         self.assertOnlyItemInSet( inc, includeSet )
 
-    def assertOnlyItemInSet( self, item, itemSet ):
-        self.assertEquals( len( itemSet ), 1 )
-        self.assertTrue( item in itemSet )
+class compsTest(TestBase ):
+    def testParsePackages( self ):
+        xmldata = """<comps>
+<packagereq>foo</packagereq>
+</comps>
+"""
+        node = createNode( xmldata )
+        pkgset = getAllPackages( node )
+        self.assertOnlyItemInSet( "foo", pkgset )
 
 if __name__ == '__main__':
     unittest.main()

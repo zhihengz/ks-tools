@@ -2,6 +2,7 @@ from rhks.components import *
 from rhks.error import *
 import unittest
 import os
+from rhksTestBase import *
 
 tmpFile="test.tmp"
 def createTmpFile( data ):
@@ -14,27 +15,7 @@ def createIncludeMacro( value ):
     inc.value = value
     return inc
 
-class componentsTest(unittest.TestCase):
-
-    def assertTrue( self, value ):
-        """
-        back porting assertTrue for python 2.3
-        """
-        s = super( componentsTest, self)
-        if hasattr( s, 'assertTrue'):
-            s.assertTrue( value )
-        else:
-            self.assertNotEquals( False, value )
-
-    def assertFalse( self, value ):
-        """
-        back porting assertFalse for python 2.3
-        """
-        s = super( componentsTest, self)
-        if hasattr( s, 'assertFalse'):
-            s.assertFalse( value )
-        else:
-            self.assertEquals( False, value )
+class componentsTest(TestBase):
 
     def tearDown( self ):
         if os.path.exists( tmpFile ):
@@ -386,9 +367,5 @@ hello world
         ks1.merge( ks2 )
         self.assertEquals( len( ks1.postActions ), 2 )
         
-    def assertOnlyItemInSet( self, item, itemSet ):
-        self.assertEquals( len( itemSet ), 1 )
-        self.assertTrue( item in itemSet )
-
 if __name__ == '__main__':
     unittest.main()

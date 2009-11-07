@@ -16,7 +16,7 @@ def getNodeText( aNode):
                 return childNodeText
 
     return None
-def parsePackages( node ):
+def getAllPackages( node ):
     pkgset=[]
     if node.localName == 'comps':
         for pkgreqNode in node.getElementsByTagName( 'packagereq' ):
