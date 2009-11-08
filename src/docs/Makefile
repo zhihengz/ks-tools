@@ -22,4 +22,4 @@ clean:
 	asciidoc $<
 
 %.1.xml: %.1.txt
-	asciidoc -b docbook -d manpage $<
+	asciidoc -f kstools.conf -d manpage $<
