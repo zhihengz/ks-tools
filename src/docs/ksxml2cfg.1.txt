@@ -24,10 +24,18 @@ OPTIONS
     print this help information
 
 *-o, --out='file'*::
+    specify output file, otherwise it is `ks.cfg'
+
+USAGE
+-----
+You can simple run 
+----
+ksxml2cfg ks1.xml ks2.xml
+----
 
 AUTHOR
 ------
-Written by Zhiheng Zhang mailto:zhihengz_at_gmail_dot_com
+Written by Zhiheng Zhang, <zhihengz@gmail.com>
 
 COPYING
 -------
