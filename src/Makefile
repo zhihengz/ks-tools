@@ -10,9 +10,9 @@ dup_cmds_data_files := data/testSingleCommand.xml data/testMultipleCommands.xml
 dup_pkgs_data_files := data/testPackages.xml data/testPackages.xml
 dup_acts_data_files := data/testActions.xml data/testDuplicatePreAction.xml 
 multiple_postacts_data_files := data/testActions.xml data/testMultiplePostAction.xml 
-all:	ksxml2cfg test
+all:	ksxml2cfg kscomps test
 clean:
-	rm -f ksxml2cfg
+	rm -f ksxml2cfg kscomps
 	rm -fr *~ tmp
 	rm -fr *.pyc
 	cd rhks && $(MAKE) clean
@@ -39,20 +39,27 @@ test:
 	echo "ignore failure anyway"
 	@echo "compiling $(multiple_postacts_data_files)"; \
 	python ksxml2cfg.py -o data/mpostacts.cfg $(multiple_postacts_data_files) ;
+	@echo "testing kscomps.py"
 	python kscomps.py -q data/compsRhcs.xml > data/compsRhcs.txt
 	@echo "checking results..." && data/testResult.sh
 ksxml2cfg:	ksxml2cfg.py
 	@echo "creating shell script wrapper" && \
 	echo "#!/usr/bin/python" >ksxml2cfg && \
 	cat ksxml2cfg.py >>ksxml2cfg && chmod +x ksxml2cfg
+kscomps:	kscomps.py
+	@echo "creating shell script wrapper" && \
+	echo "#!/usr/bin/python" >kscomps && \
+	cat kscomps.py >>kscomps && chmod +x kscomps
 
 install:
 	mkdir -p $(DESTDIR)$(BIN_BASE)
 	install -m 755 ksxml2cfg $(DESTDIR)$(BIN_BASE)
+	install -m 755 kscomps $(DESTDIR)$(BIN_BASE)
 	mkdir -p $(DESTDIR)$(PYTHON_LIB)/rhks
 	install -m 644 rhks/components.py $(DESTDIR)$(PYTHON_LIB)/rhks/components.py
 	install -m 644 rhks/parser.py $(DESTDIR)$(PYTHON_LIB)/rhks/parser.py	
 	install -m 644 rhks/__init__.py $(DESTDIR)$(PYTHON_LIB)/rhks/__init__.py
 	install -m 644 rhks/log.py $(DESTDIR)$(PYTHON_LIB)/rhks/log.py
 	install -m 644 rhks/error.py $(DESTDIR)$(PYTHON_LIB)/rhks/error.py
+	install -m 644 rhks/comps.py $(DESTDIR)$(PYTHON_LIB)/rhks/comps.py
 	cd docs && $(MAKE) install DESTDIR=$(DESTDIR)

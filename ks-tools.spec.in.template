@@ -28,6 +28,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 /usr/bin/ksxml2cfg
+/usr/bin/kscomps
 %{python_sitelib}/rhks/
 
 %doc
