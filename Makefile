@@ -1,5 +1,5 @@
 TARGET=rpm
-DIST=fc11
+DIST=
 all:	unittest
 unittest:	
 	cd test && $(MAKE) test
@@ -14,5 +14,9 @@ rpm:	ks-tools.spec.in
 	rpmpkgbuild $(TARGET)
 
 ks-tools.spec.in:	ks-tools.spec.in.template
+ifdef DIST
 	cat ks-tools.spec.in.template | \
 	sed -e "s#DIST#.$(DIST)#g" > ks-tools.spec.in
+else
+	cat ks-tools.spec.in.template > ks-tools.spec.in
+endif

@@ -2,7 +2,7 @@
 Summary: ks-tools
 Name: %{pkgname}
 Version: %{ver}
-Release: %{rel}%{?dist}
+Release: %{rel}%{?dist}DIST
 License: GPL
 BuildArch: noarch
 Group: Development/Tools/Building
