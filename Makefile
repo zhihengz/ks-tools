@@ -18,5 +18,6 @@ ifdef DIST
 	cat ks-tools.spec.in.template | \
 	sed -e "s#DIST#.$(DIST)#g" > ks-tools.spec.in
 else
-	cat ks-tools.spec.in.template > ks-tools.spec.in
+	cat ks-tools.spec.in.template | \
+	sed -e "s#DIST##g" > ks-tools.spec.in
 endif
