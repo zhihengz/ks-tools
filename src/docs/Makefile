@@ -4,6 +4,8 @@ mandir = $(datadir)/man
 
 txttargets = $(shell echo *.1.txt)
 mantargets = $(patsubst %.1.txt, %.1, $(txttargets))
+asciidocver=$(patsubst asciidoc, , $(shell asciidoc --version)
+minorasciidocver=$(shell echo $(asciidocver) | cut -d"." -f2)
 
 all: $(mantargets)
 
@@ -22,4 +24,9 @@ clean:
 	asciidoc $<
 
 %.1.xml: %.1.txt
+
+ifeq ( $(minorasccdocver), 2)
 	asciidoc -f kstools.conf -d manpage $<
+else
+	asciidoc -b docbook -a manmanual=kstools -a mansource=kstools -d manpage $<
+endif
