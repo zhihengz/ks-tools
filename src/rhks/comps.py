@@ -77,10 +77,10 @@ def getAllRpmTagNamesInDir( dirname ):
                 rpmtagset.append( rpmtag )
     return rpmtagset
 
-def findMissedPackages( pkgSet, expectedPkgSet ):
+def findMissedPackages( pkgSet, expectedPkgSet, ignoredSet=[] ):
     missed = []
     for pkg in expectedPkgSet:
-        if not pkg in pkgSet:
+        if ( not pkg in pkgSet ) and ( not pkg in ignoredSet ):
             missed.append( pkg )
     return missed
 
@@ -107,3 +107,13 @@ class Comps :
             else:
                 self.packages[ package ] = [group]
         
+
+    def findAllPkgsInGroups( self, groupNames ):
+        pkgset = []
+        for group in groupNames:
+            if self.groups.has_key( group ):
+                pkgsInGroup = self.groups [ group ]
+                for pkg in pkgsInGroup:
+                    if not pkg in pkgset:
+                        pkgset.append( pkg )
+        return pkgset

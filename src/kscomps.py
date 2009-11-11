@@ -5,21 +5,25 @@ from rhks.error import *
 def print_usage( ):
     print """usage: kscomps  [OPTIONS] [FILE] ...
 [OPTIONS] are:
--h, --help              print this help information
--v, --version           print version
--q, --query             query comps file and outpu all packages
--V, --verify=[DIR]      verify comps file against rpm folders
+-h, --help                print this help information
+-v, --version             print version
+-q, --query               query comps file and outpu all packages
+-V, --verify=[DIR]        verify comps file against rpm folders
+-i, --ignore-[GROUP]      ignore package missing in group of GROUP
 """
 
-def queryAllPackages( compsFile ):
+def queryAllPackages( compsFile, ignoredGroups ):
     mycomps = comps.parseComps( comps.parseCompsXmlNode( compsFile ) )
+    ignoredpkgs = mycomps.findAllPkgsInGroups( ignoredGroups )
     for pkg in mycomps.packages.keys():
-        print pkg
+        if not pkg in ignoredpkgs:
+            print pkg
 
-def verifyAllPackages( compsFile, rpmdir ):
+def verifyAllPackages( compsFile, rpmdir, ignoredGroups ):
     compsset = comps.parseComps( comps.parseCompsXmlNode( compsFile ) ).packages.keys()
     foundset = comps.getAllRpmTagNamesInDir( rpmdir )
-    missedInRpms = comps.findMissedPackages( foundset, compsset )
+    ignoredset = compsset.findAllPkgsInGroups( ignoredGroups )
+    missedInRpms = compsset.findMissedPackages( foundset, compsset, ignoredset )
     noError = False
     noWarning = False
 
@@ -45,8 +49,8 @@ def verifyAllPackages( compsFile, rpmdir ):
 def main():
     version= "1.0.0"
     author="Zhiheng Zhang"
-    shortOpts = "hvqV:"
-    longOpts = [ "help", "version", "query", "verify=" ]
+    shortOpts = "hvqV:i:"
+    longOpts = [ "help", "version", "query", "verify=", "ignore=" ]
     try:
         opts, args = getopt.getopt( sys.argv[1:], 
                                     shortOpts,
@@ -57,6 +61,7 @@ def main():
         sys.exit( 1 )
         
     action = None
+    ignoredGroups = []
     for o, a in opts:
         if o == "--help" or o == "-h":
             print_usage()
@@ -72,6 +77,9 @@ def main():
             if not os.path.isdir( rpmdir ):
                 log.print_error( rpmdir + " is not directory" )
                 sys.exit( 1 )
+        elif o == "--ignore" or o == "-i":
+            if not a in ignoredGroups:
+                ignoredGroups.append( a )
 
     if action == None:
         log.print_error( "no action asked" )
@@ -86,9 +94,10 @@ def main():
     compsFile = args[0]
 
     if action == "query":
-        queryAllPackages( compsFile )
+        queryAllPackages( compsFile, ignoredGroups )
     elif action == "verify":
-        verifyAllPackages( compsFile, rpmdir )
+        ignoredGroups = []
+        verifyAllPackages( compsFile, rpmdir, ignoredGroups )
         
 if __name__ == "__main__":
 	main()

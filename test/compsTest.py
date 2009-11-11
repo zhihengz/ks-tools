@@ -95,6 +95,20 @@ class compsTest(TestBase ):
         missed = findMissedPackages( pkgset, expectedPkgSet )
         self.assertEquals( len( missed ), 0 )
 
+    def testFoundNothingWithIgnoredSet( self ):
+        pkgset=[]
+        expectedPkgSet= [ "foo" ]
+        ignoredSet = [ "foo" ]
+        missed = findMissedPackages( pkgset, expectedPkgSet, ignoredSet )
+        self.assertEquals( len( missed ), 0 )
+
+    def testFoundMissedWithIngoredSet( self ):
+        pkgset = [ "foo" ]
+        expectedPkgSet = [ "foo", "bar" ]
+        ignoredSet = [ "foo" ]
+        missed = findMissedPackages( pkgset, expectedPkgSet, ignoredSet )
+        self.assertOnlyItemInSet( "bar", missed )
+
     def testAddSinglePackageInSingleGroup( self ):
         comps = Comps()
         comps.addPackagesInGroup( "bar", [ "foo" ] )
@@ -134,6 +148,23 @@ class compsTest(TestBase ):
         self.assertTrue(  "bar" in comps.packages[ "foo" ] )
         self.assertTrue(  "hello" in comps.packages[ "foo" ] )
 
+    def testFindNoPackagesInEmptyGroup( self ):
+        comps = Comps( )
+        comps.addPackagesInGroup( "bar", [ "foo" ] )
+        foundPkgs = comps.findAllPkgsInGroups( [] )
+        self.assertEquals( len( foundPkgs ), 0 )
+
+    def testFindNoPackagesInDiffGroup( self ):
+        comps = Comps( )
+        comps.addPackagesInGroup( "bar", [ "foo" ] )
+        foundPkgs = comps.findAllPkgsInGroups( [ "hello" ] )
+        self.assertEquals( len( foundPkgs ), 0 )
+
+    def testFindPackagesInGroup( self ):
+        comps = Comps( )
+        comps.addPackagesInGroup( "bar", [ "foo" ] )
+        foundPkgs = comps.findAllPkgsInGroups( [ "bar" ] )
+        self.assertOnlyItemInSet( "foo", foundPkgs )
 
 if __name__ == '__main__':
     unittest.main()

@@ -47,4 +47,5 @@ test_file_exists testSingleCommand.cfg
 test_file_exists merged.cfg
 test_file_exists mpostacts.cfg
 test_comps_rhcs compsRhcs.txt 37
+test_comps_rhcs compsRhcsIgnored.txt 0
 exit 0

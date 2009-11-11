@@ -41,6 +41,7 @@ test:
 	python ksxml2cfg.py -o data/mpostacts.cfg $(multiple_postacts_data_files) ;
 	@echo "testing kscomps.py"
 	python kscomps.py -q data/compsRhcs.xml > data/compsRhcs.txt
+	python kscomps.py -i rhcs -q data/compsRhcs.xml > data/compsRhcsIgnored.txt
 	@echo "checking results..." && data/testResult.sh
 ksxml2cfg:	ksxml2cfg.py
 	@echo "creating shell script wrapper" && \
