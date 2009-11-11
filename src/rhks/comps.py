@@ -2,6 +2,13 @@ import xml.dom.minidom
 import log
 import os, rpm
 
+def formatList( aList ):
+    ret="["
+    for item in aList:
+        ret += item + ", "
+    ret += "]"
+    return ret
+
 def getNodeText( aNode):
     """get node text
     
@@ -19,13 +26,32 @@ def getNodeText( aNode):
     return None
 def getAllPackages( node ):
     pkgset=[]
-    if node.localName == 'comps':
-        for pkgreqNode in node.getElementsByTagName( 'packagereq' ):
-          pkg = parsePackageReq( pkgreqNode )
-          if not pkg in pkgset:
-              pkgset.append( pkg )
-
+    for pkgreqNode in node.getElementsByTagName( 'packagereq' ):
+        pkg = parsePackageReq( pkgreqNode )
+        if not pkg in pkgset:
+            pkgset.append( pkg )
+            
     return pkgset
+
+def parseComps( node ):
+    comps = Comps()
+    if node.localName == 'comps':
+        for groupNode in  [ e for e in node.childNodes if e.nodeType == e.ELEMENT_NODE and e.localName == "group" ]:
+            parsePackagesInGroupNode( groupNode, comps )
+
+    return comps
+    
+def parsePackagesInGroupNode( node, comps ):
+    
+    pkgs = getAllPackages( node )
+    idNodes = [ e for e in node.childNodes if e.nodeType == e.ELEMENT_NODE and e.localName == "id" ]
+    if len ( idNodes ) == 0:
+        log.print_warn( "no group id found for " + formatList( pkgs ) )
+    else:
+        groupName = getNodeText( idNodes[0] )
+        if len( idNodes ) > 1:
+            log.print_warn( "multiple group ids found for " + formatList( pkgs ) )
+        comps.addPackagesInGroup( groupName, pkgs )        
 
 def parseCompsXmlNode( filename ):
     doc = xml.dom.minidom.parse( filename )
@@ -59,3 +85,25 @@ def findMissedPackages( pkgSet, expectedPkgSet ):
     return missed
 
 
+class Comps :
+    def __init__(self):
+        self.groups = {}
+        self.packages = {}
+
+    def addPackagesInGroup( self, group, packages ):
+        if self.groups.has_key( group ):
+            existedPackages = self.groups[ group ]
+            for package in packages:
+                if not package in existedPackages:
+                    existedPackages.append( package )
+        else:
+            self.groups[ group ] = packages
+
+        for package in packages:
+            if self.packages.has_key( package ):
+                existedGroups = self.packages[ package ]
+                if not group in existedGroups:
+                    existedGroups.append( group )
+            else:
+                self.packages[ package ] = [group]
+        

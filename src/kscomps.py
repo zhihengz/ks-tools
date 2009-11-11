@@ -12,11 +12,12 @@ def print_usage( ):
 """
 
 def queryAllPackages( compsFile ):
-    for pkg in comps.getAllPackages( comps.parseCompsXmlNode( compsFile ) ):
+    mycomps = comps.parseComps( comps.parseCompsXmlNode( compsFile ) )
+    for pkg in mycomps.packages.keys():
         print pkg
 
 def verifyAllPackages( compsFile, rpmdir ):
-    compsset = comps.getAllPackages( comps.parseCompsXmlNode( compsFile ) )
+    compsset = comps.parseComps( comps.parseCompsXmlNode( compsFile ) ).packages.keys()
     foundset = comps.getAllRpmTagNamesInDir( rpmdir )
     missedInRpms = comps.findMissedPackages( foundset, compsset )
     noError = False
