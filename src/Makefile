@@ -42,6 +42,7 @@ test:
 	@echo "testing kscomps.py"
 	python kscomps.py -q data/compsRhcs.xml > data/compsRhcs.txt
 	python kscomps.py -i rhcs -q data/compsRhcs.xml > data/compsRhcsIgnored.txt
+	python kscomps.py -i rhcs -V data data/compsRhcs.xml
 	@echo "checking results..." && data/testResult.sh
 ksxml2cfg:	ksxml2cfg.py
 	@echo "creating shell script wrapper" && \

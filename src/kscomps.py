@@ -20,10 +20,11 @@ def queryAllPackages( compsFile, ignoredGroups ):
             print pkg
 
 def verifyAllPackages( compsFile, rpmdir, ignoredGroups ):
-    compsset = comps.parseComps( comps.parseCompsXmlNode( compsFile ) ).packages.keys()
+    mycomps = comps.parseComps( comps.parseCompsXmlNode( compsFile ) )
+    compsset = mycomps.packages.keys()
     foundset = comps.getAllRpmTagNamesInDir( rpmdir )
-    ignoredset = compsset.findAllPkgsInGroups( ignoredGroups )
-    missedInRpms = compsset.findMissedPackages( foundset, compsset, ignoredset )
+    ignoredset = mycomps.findAllPkgsInGroups( ignoredGroups )
+    missedInRpms = comps.findMissedPackages( foundset, compsset, ignoredset )
     noError = False
     noWarning = False
 
@@ -96,7 +97,6 @@ def main():
     if action == "query":
         queryAllPackages( compsFile, ignoredGroups )
     elif action == "verify":
-        ignoredGroups = []
         verifyAllPackages( compsFile, rpmdir, ignoredGroups )
         
 if __name__ == "__main__":
