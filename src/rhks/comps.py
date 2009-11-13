@@ -95,13 +95,14 @@ def findAllGroups( node ):
     groups = []
     for groupNode in getAllGroupChildNodes( node ):
         idNodes = getAllIdChildNodes( groupNode )
-        if idNodes == None:
+        if idNodes == None or len( idNodes ) == 0 :
             log.print_warn( "no group id found" )
         else:
             groupName = getNodeText( idNodes[0] )
             if not groupName in groups:
                 groups.append( groupName )
-
+            else:
+                log.print_warn( "duplicated group name found for " + groupName )
             if len( idNodes ) > 1:
                 log.print_warn( "multiple group ids found for %s" %(groupName ) )
     return groups

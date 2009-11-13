@@ -77,6 +77,54 @@ class compsTest(TestBase ):
         self.assertOnlyItemInSet( "foo", comps.groups[ "bar" ] )
         self.assertOnlyItemInSet( "foo", comps.groups[ "bar2" ] )
 
+    def testFindEmptyGroupWoId( self ):
+        xmldata = """<comps>
+<group>
+<hello></hello>
+</group>
+</comps>
+"""
+        node = createNode( xmldata )
+        groups = findAllGroups( node )
+        self.assertEquals( len( groups ), 0 )   
+
+    def testFindSingleGroupWithMultipleIds( self ):
+        xmldata = """<comps>
+<group>
+<id>foo</id>
+<id>bar</id>
+</group>
+</comps>
+"""
+        node = createNode( xmldata )
+        groups = findAllGroups( node )
+        self.assertEquals( len( groups ), 1 )
+
+    def testFindSingleGroupWithSingleId( self ):
+        xmldata = """<comps>
+<group>
+<id>foo</id>
+</group>
+</comps>
+"""
+        node = createNode( xmldata )
+        groups = findAllGroups( node )
+        self.assertOnlyItemInSet( "foo", groups )
+
+    def testFindSingleGroupWithDuplicateGroupName( self ):
+        xmldata = """<comps>
+<group>
+<id>foo</id>
+</group>
+<group>
+<id>foo</id>
+</group>
+</comps>
+"""
+        node = createNode( xmldata )
+        groups = findAllGroups( node )
+        self.assertOnlyItemInSet( "foo", groups )
+
     def testFoundNothingInEmptyPkgSet( self ):
         pkgset = []
         expectedPkgSet = []
@@ -166,5 +214,6 @@ class compsTest(TestBase ):
         foundPkgs = comps.findAllPkgsInGroups( [ "bar" ] )
         self.assertOnlyItemInSet( "foo", foundPkgs )
 
+        
 if __name__ == '__main__':
     unittest.main()
