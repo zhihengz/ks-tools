@@ -33,18 +33,25 @@ def getAllPackages( node ):
             
     return pkgset
 
+def getAllGroupChildNodes( node ):
+    return [ e for e in node.childNodes if e.nodeType == e.ELEMENT_NODE and e.localName == "group" ]
+
 def parseComps( node ):
     comps = Comps()
     if node.localName == 'comps':
-        for groupNode in  [ e for e in node.childNodes if e.nodeType == e.ELEMENT_NODE and e.localName == "group" ]:
+        for groupNode in getAllGroupChildNodes( node ):
             parsePackagesInGroupNode( groupNode, comps )
 
     return comps
-    
+
+def getAllIdChildNodes( node ):
+   
+    return [ e for e in node.childNodes if e.nodeType == e.ELEMENT_NODE and e.localName == "id" ]
+
 def parsePackagesInGroupNode( node, comps ):
     
     pkgs = getAllPackages( node )
-    idNodes = [ e for e in node.childNodes if e.nodeType == e.ELEMENT_NODE and e.localName == "id" ]
+    idNodes = getAllIdChildNodes( node )
     if len ( idNodes ) == 0:
         log.print_warn( "no group id found for " + formatList( pkgs ) )
     else:
@@ -84,6 +91,20 @@ def findMissedPackages( pkgSet, expectedPkgSet, ignoredSet=[] ):
             missed.append( pkg )
     return missed
 
+def findAllGroups( node ):
+    groups = []
+    for groupNode in getAllGroupChildNodes( node ):
+        idNodes = getAllIdChildNodes( groupNode )
+        if idNodes == None:
+            log.print_warn( "no group id found" )
+        else:
+            groupName = getNodeText( idNodes[0] )
+            if not groupName in groups:
+                groups.append( groupName )
+
+            if len( idNodes ) > 1:
+                log.print_warn( "multiple group ids found for %s" %(groupName ) )
+    return groups
 
 class Comps :
     def __init__(self):
@@ -117,3 +138,9 @@ class Comps :
                     if not pkg in pkgset:
                         pkgset.append( pkg )
         return pkgset
+
+class CompsMerge :
+    def __init__(self, compsNode):
+        self.compsNode = compsNode
+        self.groups = findAllGroups( self.compsNode )
+
