@@ -1,6 +1,7 @@
 import xml.dom.minidom
 import log
 import os, rpm
+from error import *
 
 def formatList( aList ):
     ret="["
@@ -140,8 +141,29 @@ class Comps :
                         pkgset.append( pkg )
         return pkgset
 
+def parseCompsMerge( node ):
+    if node.localName == 'comps':
+        return CompsMerge( node )
+    return None
+
 class CompsMerge :
     def __init__(self, compsNode):
         self.compsNode = compsNode
         self.groups = findAllGroups( self.compsNode )
 
+    def merge( self, aComps ):
+        for group in aComps.groups:
+            if not group in self.groups:
+                self.groups.append( group )
+            else:
+                raise DuplicationError( "group %s is duplicated" %(group))
+        
+        for groupNode in getAllGroupChildNodes( aComps.compsNode ):
+            self.compsNode.appendChild( groupNode )
+
+    def output( self, outfile ):
+        file = open( outfile, "w" )
+        doc = xml.dom.minidom.Document( )
+        doc.appendChild( self.compsNode )
+        file.writelines( doc.toxml( ) )
+        file.close()

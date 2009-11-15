@@ -48,4 +48,7 @@ test_file_exists merged.cfg
 test_file_exists mpostacts.cfg
 test_comps_rhcs compsRhcs.txt 37
 test_comps_rhcs compsRhcsIgnored.txt 0
+test_file_exists compsRhcsSingleMerge.txt
+test_file_exists compsRhcsMultipleMerge.txt
+test_file_nonexists compsRhcsDupMerge.txt
 exit 0

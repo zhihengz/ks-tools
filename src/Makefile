@@ -43,6 +43,10 @@ test:
 	python kscomps.py -q data/compsRhcs.xml > data/compsRhcs.txt
 	python kscomps.py -i rhcs -q data/compsRhcs.xml > data/compsRhcsIgnored.txt
 	python kscomps.py -i rhcs -V data data/compsRhcs.xml
+	python kscomps.py -o data/compsRhcsSingleMerge.txt -m data/compsRhcs.xml
+	python kscomps.py -o data/compsRhcsMultipleMerge.txt -m data/compsRhcs.xml data/compsMockup.xml
+	python kscomps.py -o data/compsRhcsDupMerge.txt -m data/compsRhcs.xml data/compsRhcs.xml ; \
+	echo "ignore failure anyway"
 	@echo "checking results..." && data/testResult.sh
 ksxml2cfg:	ksxml2cfg.py
 	@echo "creating shell script wrapper" && \

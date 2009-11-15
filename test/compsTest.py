@@ -6,6 +6,15 @@ def createNode( xmlText ):
     return doc.documentElement
 
 class compsTest(TestBase ):
+
+    def assertChildGroupNode( self, node, groupName ):
+        for groupNode in getAllGroupChildNodes( node ):
+            for idNode in getAllIdChildNodes( groupNode ):
+                idName = getNodeText( idNode )
+                if idName == groupName:
+                    return
+        self.fail( "no group " + groupName + " found" )
+
     def testParseSinglePackageInSingeGroup( self ):
         xmldata = """
 <group>
@@ -124,6 +133,90 @@ class compsTest(TestBase ):
         node = createNode( xmldata )
         groups = findAllGroups( node )
         self.assertOnlyItemInSet( "foo", groups )
+
+    def testCompsMerge( self ):
+
+        xmldata = """<comps>
+<group>
+<id>foo</id>
+</group>
+</comps>
+"""
+        node = createNode( xmldata )
+        compsMerge = CompsMerge( node )
+        self.assertChildGroupNode( compsMerge.compsNode, "foo" )
+        self.assertOnlyItemInSet( "foo", compsMerge.groups )
+
+    def testMergeComps( self ):
+
+        xmldata1 = """<comps>
+<group>
+<id>foo</id>
+</group>
+</comps>
+"""     
+        xmldata2 = """<comps>
+<group>
+<id>bar</id>
+</group>
+</comps>
+"""
+        compsMerge1 = CompsMerge( createNode( xmldata1 ) )
+        compsMerge2 = CompsMerge( createNode( xmldata2 ) )
+        compsMerge1.merge( compsMerge2 )
+        self.assertEquals( len( compsMerge1.groups ), 2 )
+        self.assertTrue( "bar" in compsMerge1.groups )
+        self.assertTrue( "foo" in compsMerge1.groups )
+        self.assertTrue( "bar" in compsMerge1.groups )
+        self.assertChildGroupNode( compsMerge1.compsNode, "bar" )
+        self.assertChildGroupNode( compsMerge1.compsNode, "foo" )
+
+    def testMergeDuplicateComps( self ):
+
+        xmldata1 = """<comps>
+<group>
+<id>foo</id>
+</group>
+</comps>
+"""     
+        xmldata2 = """<comps>
+<group>
+<id>foo</id>
+</group>
+</comps>
+"""
+        compsMerge1 = CompsMerge( createNode( xmldata1 ) )
+        compsMerge2 = CompsMerge( createNode( xmldata2 ) )
+        try:
+            compsMerge1.merge( compsMerge2 )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "expect duplication error" )
+
+
+    def testMergeEmptyGroupComps( self ):
+
+        xmldata1 = """<comps>
+</comps>
+"""     
+        xmldata2 = """<comps>
+<group>
+<id>foo</id>
+</group>
+</comps>
+"""
+        compsMerge1 = CompsMerge( createNode( xmldata1 ) )
+        compsMerge2 = CompsMerge( createNode( xmldata2 ) )
+        compsMerge1.merge( compsMerge2 )
+        self.assertOnlyItemInSet( "foo", compsMerge1.groups )
+        self.assertChildGroupNode( compsMerge1.compsNode, "foo" )
+
+        compsMerge1 = CompsMerge( createNode( xmldata1 ) )
+        compsMerge2 = CompsMerge( createNode( xmldata2 ) )
+        compsMerge2.merge( compsMerge1 )
+        self.assertOnlyItemInSet( "foo", compsMerge2.groups )
+        self.assertChildGroupNode( compsMerge2.compsNode, "foo" )
 
     def testFoundNothingInEmptyPkgSet( self ):
         pkgset = []

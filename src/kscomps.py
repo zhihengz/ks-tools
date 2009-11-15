@@ -10,7 +10,24 @@ def print_usage( ):
 -q, --query               query comps file and outpu all packages
 -V, --verify=[DIR]        verify comps file against rpm folders
 -i, --ignore-[GROUP]      ignore package missing in group of GROUP
+-m, --merge               merge multiple comps files, default output is comps.xml
+                          in working path
+-o, --out=[FILE]          output file of merged comps
 """
+
+def mergeComps( compsFiles, outfile ):
+    compsMergeList = []
+    for compsFile in compsFiles:
+        compsMergeList.append( comps.parseCompsMerge( comps.parseCompsXmlNode( compsFile ) ) )
+    result = compsMergeList[0]
+    for i in range( 1, len( compsMergeList ) ):
+        try:
+            result.merge( compsMergeList[i] )
+        except DuplicationError, e:
+            log.print_error( e.msg + " in " + compsFiles[ i ] )
+            sys.exit( 1 )
+
+    result.output( outfile )
 
 def queryAllPackages( compsFile, ignoredGroups ):
     mycomps = comps.parseComps( comps.parseCompsXmlNode( compsFile ) )
@@ -50,8 +67,8 @@ def verifyAllPackages( compsFile, rpmdir, ignoredGroups ):
 def main():
     version= "1.0.0"
     author="Zhiheng Zhang"
-    shortOpts = "hvqV:i:"
-    longOpts = [ "help", "version", "query", "verify=", "ignore=" ]
+    shortOpts = "hvqV:i:mo:"
+    longOpts = [ "help", "version", "query", "verify=", "ignore=", "merge", "out=" ]
     try:
         opts, args = getopt.getopt( sys.argv[1:], 
                                     shortOpts,
@@ -63,6 +80,7 @@ def main():
         
     action = None
     ignoredGroups = []
+    outfile="comps.xml"
     for o, a in opts:
         if o == "--help" or o == "-h":
             print_usage()
@@ -81,7 +99,10 @@ def main():
         elif o == "--ignore" or o == "-i":
             if not a in ignoredGroups:
                 ignoredGroups.append( a )
-
+        elif o in ( "-m", "--merge" ):
+            action = "merge"
+        elif o in ( "-o", "--out" ):
+            outfile = a
     if action == None:
         log.print_error( "no action asked" )
         print_usage()
@@ -98,6 +119,8 @@ def main():
         queryAllPackages( compsFile, ignoredGroups )
     elif action == "verify":
         verifyAllPackages( compsFile, rpmdir, ignoredGroups )
-        
+    elif action == "merge":
+        mergeComps( args, outfile )
+
 if __name__ == "__main__":
 	main()
