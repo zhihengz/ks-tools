@@ -165,5 +165,5 @@ class CompsMerge :
         file = open( outfile, "w" )
         doc = xml.dom.minidom.Document( )
         doc.appendChild( self.compsNode )
-        file.writelines( doc.toxml( ) )
+        file.writelines( doc.toxml( ).encode('UTF-8') )
         file.close()
