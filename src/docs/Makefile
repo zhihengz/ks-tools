@@ -25,7 +25,7 @@ clean:
 
 %.1.xml: %.1.txt
 
-ifeq ($(minorasciidocver),2)
+ifeq ($(asciidocver),8.2.5)
 	@echo "using own docbook conf since it is ascii $(asciidocver)"
 	asciidoc -f kstools.conf -d manpage $<
 else
