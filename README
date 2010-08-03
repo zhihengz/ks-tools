@@ -1,0 +1,6 @@
+ks-tools:
+
+various redhat kickstart configuration utilities
+
+* ksxml2cfg: generate kickstart cfg file from multiple xml files.
+* kscomps: generate comps-xxx.xml file from multiple xml files
