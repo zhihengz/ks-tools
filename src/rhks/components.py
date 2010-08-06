@@ -12,6 +12,19 @@ def appendItemWoDuplicate( item, itemList, what ):
         raise DuplicationError( what + " is duplicated" )
     itemList.append( item )
 
+def isValidRepoOptions( options ):
+    if options.has_key( "baseurl" ) == options.has_key( "mirrorlist" ):
+        return False
+    return not False
+
+def isSameRepo( options1, options2 ):
+    if options1.has_key( "baseurl" ) and options2.has_key( "baseurl" ):
+        return options1[ "baseurl" ] == options2[ "baseurl" ]
+    elif options1.has_key( "mirrorlist" ) and options2.has_key( "mirrorlist" ):
+        return options1[ "mirrorlist" ] == options2[ "mirrorlist" ]
+    else:
+        return False
+
 class Directive:
     def __init__(self, name):
         self.name = name;
@@ -49,7 +62,7 @@ class Command(Directive):
         if other == None:
             return False
         return self.name == other.name
-
+            
     def __ne__(self, other ):
         if other == None:
             return False
@@ -59,6 +72,9 @@ class Command(Directive):
         if self.name == None:
             return None
         return self.name.__hash__()
+
+    def compareOption( self, optionName, other ):
+        return self.options[ optionName ] == other.options[ optionName ]
 
 def compilePackageGroup( gName ):
     return "@ " + gName
@@ -173,9 +189,16 @@ class Kickstart:
         self.srcDir=None
 
     def addCommand( self, command ):
-        appendItemWoDuplicate( command, 
-                                 self.commands, 
-                                 "command " + command.name )
+
+        if not self.isValidCommand( command ):
+            raise InvalidCommandError( command.compile() + " is invalid" )
+
+        if command.name == "repo":
+            self.appendRepoCommandWoDuplicate( command )
+        else:
+            appendItemWoDuplicate( command, 
+                                   self.commands, 
+                                   "command " + command.name )
     def addPackages( self, packages):
         if self.packages == None:
             self.packages = packages
@@ -206,3 +229,20 @@ class Kickstart:
             raise DuplicationError( "pre action is duplicated" )
         
         self.postActions.extend( ks.postActions )
+
+    def isValidCommand( self, command ):
+        
+        if command.name == "repo":
+            return isValidRepoOptions( command.options )
+        else:
+            return not False
+
+    def appendRepoCommandWoDuplicate( self, repoCommand ):
+        
+        for command in self.commands:
+            if command.name == "repo" and isSameRepo( command.options, 
+                                                      repoCommand.options ):
+                raise DuplicationError( repoCommand.compile() + 
+                                        " is duplicated" )
+        
+        self.commands.append( repoCommand )

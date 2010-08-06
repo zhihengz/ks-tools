@@ -16,5 +16,15 @@ class DuplicationError(Error):
         """
         self.msg = msg
         
+class InvalidCommandError( Error):
+    """Exception raised for errors on invalid command
+    """
 
+    def __init__(self, msg ):
+        """
+
+        Arguments:
+        - `msg`:
+        """
+        self.msg = msg
         

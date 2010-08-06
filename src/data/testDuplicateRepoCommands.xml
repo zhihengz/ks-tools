@@ -1,0 +1,6 @@
+<kickstart name="testMultipleCommands">
+  <command>
+    <repo baseurl="http://www.redhat.com"/>
+    <repo baseurl="http://www.redhat.com"/>
+  </command>
+</kickstart>

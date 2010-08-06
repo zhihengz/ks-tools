@@ -34,11 +34,13 @@ test_comps_rhcs()
     
 }
 test_file_nonexists testDuplicateCommands.cfg
+test_file_nonexists testDuplicateRepoCommands.cfg
 test_file_nonexists testDuplicateIncludess.cfg
 test_file_nonexists dupcmd.cfg
 test_file_nonexists duppkgs.cfg
 test_file_nonexists dupacts.cfg
 test_file_exists testActions.cfg
+test_file_exists testMultipleRepoCommands.cfg
 test_file_exists testIncludes.cfg
 test_file_exists testPackages.cfg
 test_file_exists testFull.cfg

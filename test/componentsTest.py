@@ -196,7 +196,6 @@ hello world
             pass
         else:
             self.fail( "expected duplication error" )  
-
     def testDuplicatedCommands( self ):
         ks = Kickstart( "test" )
         ks.addCommand( Command( "test" ) )
@@ -207,6 +206,53 @@ hello world
         else:
             self.fail( "expected duplication error" )
 
+    def testInvalidRepoCommand( self ):
+        ks = Kickstart( "test" )
+        try:
+            ks.addCommand( Command( "repo" ) )
+        except InvalidCommandError:
+            pass
+        else:
+            self.fail( "repo command has niehter baseurl or mirrorlist" );
+        ks = Kickstart( "test" )
+        repoCmd = Command( "repo" )
+        repoCmd.addOption( "baseurl", "cdrom" )
+        repoCmd.addOption( "mirrorlist", "mirrorlist" )
+        try:
+            ks.addCommand( Command( "repo" ) )
+        except InvalidCommandError:
+            pass
+        else:
+            self.fail( "repo command has either baseurl or mirrorlist" );
+
+    def testMultipleRepoCommands( self ):
+        ks = Kickstart( "test" )
+        repoCmd1 = Command( "repo" )
+        repoCmd1.addOption( "baseurl", "cdrom" )
+        repoCmd2 = Command( "repo" )
+        repoCmd2.addOption( "baseurl", "cdrom2" )
+        ks.addCommand( repoCmd1 )
+        try:
+            ks.addCommand( repoCmd2 )
+        except DuplicationError:
+            self.fail( "multipe repos are allowed" )
+        else:
+            pass
+
+    def testDuplicatedRepoCommands( self ):
+        ks = Kickstart( "test" )
+        repoCmd1 = Command( "repo" )
+        repoCmd1.addOption( "baseurl", "cdrom" )
+        repoCmd2 = Command( "repo" )
+        repoCmd2.addOption( "baseurl", "cdrom" )
+        ks.addCommand( repoCmd1 )
+        try:
+            ks.addCommand( repoCmd2 )
+        except DuplicationError:
+            pass
+        else:
+            self.fail( "multipe repos are allowed" )
+        
     def testDuplicatedIncludesInAction( self ):
         preAction = Action( "pre" )
         preAction.include ( "file_a" )
@@ -366,6 +412,51 @@ hello world
         self.assertEquals( len( ks1.postActions ) , 1 )
         ks1.merge( ks2 )
         self.assertEquals( len( ks1.postActions ), 2 )
+        
+    def testRepoOptions( self ):
+
+        self.assertFalse( isValidRepoOptions( {} ) );
+        options = {}
+        options [ "baseurl" ] = "cdrom"
+        options [ "mirrorlist" ] = "mirror"
+        self.assertFalse( isValidRepoOptions( options ) );
+        options = {}
+        options [ "baseurl" ] = "cdrom"
+        self.assertTrue( isValidRepoOptions( options ) );
+        options = {}
+        options [ "mirrorlist" ] = "mirror"
+        self.assertTrue( isValidRepoOptions( options ) );
+
+    def testSameBaseUrlRepoOptions( self ):
+        options1 = {}
+        options1 [ "baseurl" ] = "cdrom"
+        options2 = {}
+        options2 [ "baseurl" ] = "cdrom"
+        self.assertTrue( isSameRepo( options1, options2 ) )        
+        options1 = {}
+        options1 [ "baseurl" ] = "cdrom"
+        options2 = {}
+        options2 [ "baseurl" ] = "cdrom2"
+        self.assertFalse( isSameRepo( options1, options2 ) )
+
+    def testSameMirrorListRepoOptions( self ):
+        options1 = {}
+        options1 [ "mirrorlist" ] = "mirror"
+        options2 = {}
+        options2 [ "mirrorlist" ] = "mirror"
+        self.assertTrue( isSameRepo( options1, options2 ) )        
+        options1 = {}
+        options1 [ "mirrorlist" ] = "mirror"
+        options2 = {}
+        options2 [ "mirrorlist" ] = "mirror2"
+        self.assertFalse( isSameRepo( options1, options2 ) )
+
+    def testDiffRepoOptions( self ):
+        options1 = {}
+        options1 [ "mirrorlist" ] = "mirror"
+        options2 = {}
+        options2 [ "baseurl" ] = "cdrom"
+        self.assertFalse( isSameRepo( options1, options2 ) ) 
         
 if __name__ == '__main__':
     unittest.main()
