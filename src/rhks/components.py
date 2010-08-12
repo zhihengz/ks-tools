@@ -191,7 +191,8 @@ class Kickstart:
     def addCommand( self, command ):
 
         if not self.isValidCommand( command ):
-            raise InvalidCommandError( command.compile() + " is invalid" )
+            raise InvalidCommandError( "command `" + 
+                                       command.compile() + "' is invalid" )
 
         if command.name == "repo":
             self.appendRepoCommandWoDuplicate( command )

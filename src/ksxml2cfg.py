@@ -34,6 +34,9 @@ def parseOneFile( fileName ):
 	except DuplicationError , e:
 		log.print_error( e.msg )
 		sys.exit(1)
+	except InvalidCommandError , e:
+		log.print_error( e.msg )
+		sys.exit(1)
         ks.srcDir= getAbsDir( fileName )
         return ks
 
